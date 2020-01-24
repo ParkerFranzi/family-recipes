@@ -1,0 +1,20 @@
+.user-img img {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    border: 2px solid green;
+}
+.user-box {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+}
+
+@media screen and (min-width: 1023px) {
+    .user-box {
+        width: 33.3%;
+        padding: 15px;
+    }
+    
+}
