@@ -28,7 +28,9 @@ export default {
                 "8":"Flip the steak when ready and add some butter to the pan, when 2nd side is almost done reduce heat and baste butter on top of the steak",
                 "9":"Optionally let rest a few minutes or serve and enjoy immediately",
             },
-            "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-steak-scaled.jpg"
+            "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-steak-scaled.jpg",
+            "prepTime":"5-15 min",
+            "cookTime":"1-4 hrs",
         },
         {
             "recipeId":2,
@@ -51,6 +53,8 @@ export default {
                 "6":"Turn oven to 250F or put in smoker and leave ribs in for about an hour"
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-ribs-scaled.jpg",
+            "prepTime":"5-15 min",
+            "cookTime":"1-4 hrs",
         },
         {
             "recipeId":3,
@@ -80,6 +84,8 @@ export default {
                 "7":"Serve over rice, cauliflower rice, noodles or just eat it straight"
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/spicy-peanut-chicken-scaled.jpg",
+            "prepTime":"5-15 min",
+            "cookTime":"1-4 hrs",
         },
         {
             "recipeId":4,
@@ -103,6 +109,8 @@ export default {
                 "7":"Enjoy however you would like to eat it"
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-pulled-pork-scaled.jpg",
+            "prepTime":"5-15 min",
+            "cookTime":"1-4 hrs",
         },
         {
             "recipeId":5,
@@ -126,6 +134,8 @@ export default {
                 "7":"Enjoy however you would like to eat it"
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-pulled-pork-scaled.jpg",
+            "prepTime":"5-15 min",
+            "cookTime":"1-4 hrs",
         },
         {
             "recipeId":6,
@@ -149,6 +159,8 @@ export default {
                 "7":"Enjoy however you would like to eat it"
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-pulled-pork-scaled.jpg",
+            "prepTime":"5-15 min",
+            "cookTime":"1-4 hrs",
         },
         {
             "recipeId":7,
@@ -172,6 +184,8 @@ export default {
                 "7":"Enjoy however you would like to eat it"
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-pulled-pork-scaled.jpg",
+            "prepTime":"5-15 min",
+            "cookTime":"1-4 hrs",
         },
     ]
 }

@@ -22,6 +22,12 @@ export default class EditRecipe extends Component {
             },
             recipeCreator: {
                 value: this.props.recipe.userId
+            },
+            prepTime: {
+                value: this.props.recipe.prepTime
+            },
+            cookTime: {
+                value: this.props.recipe.cookTime
             }
 
         }
@@ -34,10 +40,16 @@ export default class EditRecipe extends Component {
         this.setState({recipeCreator: {value: recipeCreator}})
     }
     updateDescription(description) {
-        this.setState({description: {value: description, touched: true}})
+        this.setState({description: {value: description }})
     }
     updateDishPic(dishPic) {
-        this.setState({dishPic: {value: dishPic, touched: true}})
+        this.setState({dishPic: {value: dishPic }})
+    }
+    updatePrepTime(prepTime) {
+        this.setState({prepTime: {value: prepTime }})
+    }
+    updateCookTime(cookTime) {
+        this.setState({cookTime: {value: cookTime }})
     }
     handleSubmit = event => {
         event.preventDefault()
@@ -105,6 +117,7 @@ export default class EditRecipe extends Component {
     static contextType = ApiContext
     render() {
         console.log(this.state)
+        
         return (
             <div className="edit-recipe-form">
                 <form onSubmit={this.handleSubmit}>
@@ -145,6 +158,26 @@ export default class EditRecipe extends Component {
                             aria-required="true"
                             aria-label="Recipe Description"
                             onChange={e => this.updateDescription(e.target.value)}
+                        />
+                    </div>
+                    <div id="recipie-time" className="form-row">
+                        <label htmlFor="prep-time">Prep Time</label>
+                        <input
+                            type="text"
+                            value={this.props.recipe.prepTime}
+                            required
+                            aria-required="true"
+                            arai-label="Prep Time"
+                            onChange={e => this.updatePrepTime(e.target.value)}
+                        />
+                        <label htmlFor="cook-time">Cook Time</label>
+                        <input
+                            type="text"
+                            value={this.props.recipe.cookTime}
+                            required
+                            aria-required="true"
+                            arai-label="Cook Time"
+                            onChange={e => this.updateCookTime(e.target.value)}
                         />
                     </div>
                     <div id="ingredients-list" className="form-row">
@@ -218,6 +251,9 @@ export default class EditRecipe extends Component {
                             onChange={e => this.updateDishPic(e.target.value)}
                             required
                         />
+                        <div className="current-picture">
+                            Current Picture: <img src={this.state.dishPic.value} />
+                        </div>
                     </div>
                     <button
                         type="submit"

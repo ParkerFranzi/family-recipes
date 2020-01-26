@@ -27,6 +27,14 @@ export default class AddRecipe extends Component {
             recipeCreator: {
                 value: '',
                 touched: false
+            },
+            prepTime: {
+                value: '',
+                touched: false
+            },
+            cookTime: {
+                value: '',
+                touched: false
             }
 
         }
@@ -42,6 +50,12 @@ export default class AddRecipe extends Component {
     }
     updateDishPic(dishPic) {
         this.setState({dishPic: {value: dishPic, touched: true}})
+    }
+    updatePrepTime(prepTime) {
+        this.setState({prepTime: {value: prepTime, touched: true }})
+    }
+    updateCookTime(cookTime) {
+        this.setState({cookTime: {value: cookTime, touched: true }})
     }
     handleSubmit = event => {
         event.preventDefault()
@@ -124,6 +138,24 @@ export default class AddRecipe extends Component {
                             aria-required="true"
                             aria-label="Recipe Description"
                             onChange={e => this.updateDescription(e.target.value)}
+                        />
+                    </div>
+                    <div id="recipie-time" className="form-row">
+                        <label htmlFor="prep-time">Prep Time</label>
+                        <input
+                            type="text"
+                            required
+                            aria-required="true"
+                            arai-label="Prep Time"
+                            onChange={e => this.updatePrepTime(e.target.value)}
+                        />
+                        <label htmlFor="cook-time">Cook Time</label>
+                        <input
+                            type="text"
+                            required
+                            aria-required="true"
+                            arai-label="Cook Time"
+                            onChange={e => this.updateCookTime(e.target.value)}
                         />
                     </div>
                     <div id="ingredients-list" className="form-row">

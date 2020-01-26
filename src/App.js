@@ -56,6 +56,10 @@ class App extends Component {
             />
           </RecipeError>
           <Route
+            path='/edit-recipe/:recipeId'
+            component={EditRecipe}
+          />
+          <Route
             exact path='/add-recipe'
             component={AddRecipe}
           />
