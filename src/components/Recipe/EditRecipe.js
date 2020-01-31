@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ApiContext from '../../ApiContext'
+import FamilyContext from '../../FamilyContext'
 
 export default class EditRecipe extends Component {
     constructor(props) {
@@ -114,7 +114,7 @@ export default class EditRecipe extends Component {
         this.handleIngredientInitialState();
         this.handleInstructionInitialState();
     }
-    static contextType = ApiContext
+    static contextType = FamilyContext
     render() {
         console.log(this.state)
         

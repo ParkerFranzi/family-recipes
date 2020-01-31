@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Link } from 'react-router-dom'
-import ApiContext from './ApiContext'
+import FamilyContext from './FamilyContext'
 import Header from './components/Header/Header'
 import AddUser from './components/User/AddUser'
 import UserError from './components/User/UserError'
@@ -11,13 +11,14 @@ import Landing from './components/User/Landing'
 import UserLanding from './components/User/UserLanding'
 import UserLogin from './components/Login/UserLogin'
 import EditRecipe from './components/Recipe/EditRecipe'
+import config from './config'
 
 
 class App extends Component {
 
   state = {
-      users: this.props.users,
-      recipes: this.props.recipes,
+      users: [],
+      recipes: [],
   }
   
   setUsers = users => {
@@ -30,8 +31,28 @@ class App extends Component {
       recipes: recipes
     })
   }
+
   componentDidMount() {
     //API Fetch when I need to add it
+
+    Promise.all([
+      fetch(`${config.API_ENDPOINT}/users`),
+      fetch(`${config.API_ENDPOINT}/recipes`)
+    ])
+
+    .then(([usersRes, recipesRes]) => {
+        if(!usersRes.ok)
+            return usersRes.json().then(e => Promise.reject(e));
+        if (!recipesRes.ok)
+            return recipesRes.json().then(e => Promise.reject(e));
+        return Promise.all([usersRes.json(), recipesRes.json()])
+    })
+    .then(([users, recipes]) => {
+        this.setState({users, recipes})
+    })
+    .catch(error => {console.log({ error })
+    })
+    
   }
   
   render() {
@@ -39,8 +60,9 @@ class App extends Component {
       users: this.state.users,
       recipes: this.state.recipes,
     }
+    console.log(this.state)
     return (
-      <ApiContext.Provider value={value}>
+      <FamilyContext.Provider value={value}>
         <Header />
         <main className='App'>
           <UserError>
@@ -51,7 +73,7 @@ class App extends Component {
           </UserError>
           <RecipeError>
             <Route
-              path='/recipe/:recipeId'
+              path='/recipes/:recipeId'
               component={Recipe}
             />
           </RecipeError>
@@ -64,7 +86,7 @@ class App extends Component {
             component={AddRecipe}
           />
           <Route
-            path='/user/:userId'
+            path='/users/:userId'
             component={UserLanding}
           />
           <Route
@@ -76,7 +98,7 @@ class App extends Component {
             component={UserLogin}
           />
         </main>
-      </ApiContext.Provider>
+      </FamilyContext.Provider>
 
     );
 

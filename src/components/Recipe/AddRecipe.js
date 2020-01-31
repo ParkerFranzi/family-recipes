@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ApiContext from '../../ApiContext'
+import FamilyContext from '../../FamilyContext'
 
 
 export default class AddRecipe extends Component {
@@ -98,7 +98,7 @@ export default class AddRecipe extends Component {
             instructions: this.state.instructions.filter((instruction, instructionIndex) => index !== instructionIndex)
         })
     }
-    static contextType = ApiContext
+    static contextType = FamilyContext
     render() {
         return (
             <div className="add-recipe-form">

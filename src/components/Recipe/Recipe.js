@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ApiContext from '../../ApiContext'
+import FamilyContext from '../../FamilyContext'
 import './Recipe.css'
 import EditRecipe from './EditRecipe'
 import { Link } from 'react-router-dom'
@@ -14,23 +14,26 @@ export default class Recipe extends Component {
             edit: true
         })
     }
-    static contextType = ApiContext
+    static contextType = FamilyContext
     render() {
+        
         const matchingRecipe = Number(this.props.match.params.recipeId)
-        const recipeFilter = this.context.recipes.filter(recipe => recipe.recipeId === matchingRecipe)
+        const recipeFilter = this.context.recipes.filter(recipe => recipe.id === matchingRecipe)
+        console.log(matchingRecipe, recipeFilter)
         if (recipeFilter[0] === undefined) {
             return "Recipe not found"
         }
         const ingredientList = Object.entries(recipeFilter[0].ingredients)
         const instructionList = Object.entries(recipeFilter[0].instructions)
         console.log(ingredientList)
+        
         return (
             <section className="recipe">
-                <h1>{recipeFilter[0].dishName}</h1>
+                <h1>{recipeFilter[0].dishname}</h1>
                 <img src={recipeFilter[0].image} />
                 <p className="description">{recipeFilter[0].description}</p>
-                <p className="prep-time">Prep Time: {recipeFilter[0].prepTime}</p>
-                <p className="cook-time">Cook Time: {recipeFilter[0].cookTime}</p>
+                <p className="prep-time">Prep Time: {recipeFilter[0].preptime}</p>
+                <p className="cook-time">Cook Time: {recipeFilter[0].cooktime}</p>
                 <ul className="ingredients">
                     {ingredientList.map(ingredient =>
                         <li key={ingredient[0]}>

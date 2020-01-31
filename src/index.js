@@ -7,9 +7,10 @@ import { BrowserRouter } from 'react-router-dom';
 
 
 
+
 ReactDOM.render(
     <BrowserRouter>
-        <App users={dummydata.users} recipes={dummydata.recipes}/>
+        <App />
     </BrowserRouter>,
     document.getElementById('root')
 )

@@ -1,12 +1,16 @@
-import React from 'react'
+import React, { Component } from 'react'
 
-export default React.createContext({
+const FamilyContext = React.createContext({
   users: [],
   recipes: [],
   addRecipe: () => {},
   deleteRecipe: () => {},
   editRecipe: () => {},
   handleDeleteRecipeClick: () => {},
+  addUser: () => {},
   deleteUser: () => {},
+  editUser: () => {},
   handleDeleteUserClick: () => {},
 })
+
+export default FamilyContext

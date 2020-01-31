@@ -1,8 +1,12 @@
 import React, { Component } from "react"
-import ApiContext from '../../ApiContext'
+import FamilyContext from '../../FamilyContext'
 import ValidationError from '../../ValidationError'
+import AuthApiService from '../../services/auth-api-service'
 
 export default class AddUser extends Component {
+    static defaultProps = {
+        onRegistrationSuccess: () => {}
+    }
     constructor(props) {
         super(props)
         this.state = {
@@ -22,13 +26,15 @@ export default class AddUser extends Component {
                 value: '',
                 touched: false
             },
-            profilePic: {
+            picture: {
                 value: '',
-                touched: false
-            }
+                touched: false, 
+                file: ''
+            }, 
+            error: null
         }
     }
-    static contextType = ApiContext
+    static contextType = FamilyContext
     updateFirstName(fName) {
         this.setState({fName: {value: fName, touched: true }})
     }
@@ -41,8 +47,8 @@ export default class AddUser extends Component {
     updatePassword(password) {
         this.setState({password: {value: password, touched: true }})
     }
-    updateProfilePic(profilePic) {
-        this.setState({profilePic: {value: profilePic, touched: true }})
+    updatepicture(name, picture) {
+        this.setState({picture: {value: name, touched: true, file: picture[0] }})
     }
 
     validateFirstName() {
@@ -63,13 +69,37 @@ export default class AddUser extends Component {
             return "Please enter a last name"
         }
     }
-    validateProfilePic() {
+    validatepicture() {
 
     }
     handleSubmit = e => {
         e.preventDefault()
-        const { fName, lName, email, password, profilePic } = e.target
-        console.log(fName.value, lName.value, email.value, password.value, profilePic.value )
+        
+        const { fName, lName, email, password, picture } = e.target
+        console.log(this.state.picture.value, this.state.picture.file)
+        let formData = new FormData()
+
+        formData.append('fname', fName.value)
+        formData.append('lname', lName.value)
+        formData.append('email', email.value)
+        formData.append('password', password.value)
+        formData.append(`picture`, this.state.picture.file)
+
+        for (var d of formData.entries()) {
+            console.log(d)
+        }
+        AuthApiService.postUser(formData)
+        .then(user => {
+            fName.value = ''
+            lName.value = ''
+            email.value = ''
+            password.value = ''
+            picture.value = ''
+            this.props.onRegistrationSuccess()
+        })
+        .catch(res => {
+            this.setState({ error: res.error })
+        })
     }
     render() {
         const passwordError = this.validatePassword()
@@ -78,7 +108,7 @@ export default class AddUser extends Component {
         return(
             <section className="addUser">
                 <h2>User Registration</h2>
-                <form onSubmit={e => this.handleSubmit(e)}>
+                <form onSubmit={e => this.handleSubmit(e)} encType="multipart/form-data">
                     {this.state.fName.touched && (<ValidationError message={fNameError} />)}
                     <div className="form-row">
                         <label htmlFor="fName">First Name *</label>
@@ -130,13 +160,13 @@ export default class AddUser extends Component {
                         />
                     </div>
                     <div className="form-row">
-                        <label htmlFor="profilePic">Profile Picture</label>
+                        <label htmlFor="picture">Profile Picture</label>
                         <input
                             type="file"
-                            id="profilePic"
-                            name="profilePic"
+                            id="picture"
+                            name="picture"
                             accept=".jpg, .jpeg, .png"
-                            onChange={e => this.updateProfilePic(e.target.value)}
+                            onChange={e => this.updatepicture(e.target.value, e.target.files)}
                         />
                     </div>
                     <div className="form-row">
@@ -147,11 +177,12 @@ export default class AddUser extends Component {
                                 this.validateFirstName() ||
                                 this.validateLastName() ||
                                 this.validatePassword() ||
-                                this.validateProfilePic()
+                                this.validatepicture()
                             }
                         >
                             Register
                         </button>
+                        {this.state.error && (<ValidationError message={this.state.error} />)}
                     </div>
                 </form>
             </section>
