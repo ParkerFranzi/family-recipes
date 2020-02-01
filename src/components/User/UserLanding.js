@@ -19,11 +19,9 @@ class UserLanding extends Component {
         if (!this.context.users.length) {
             return <ul></ul>
         }
-        console.log(this.context.users)
         const matchingUserId = Number(this.props.match.params.userId)
         const recipeFilter = this.context.recipes.filter(recipe => recipe.userid === matchingUserId)
         const userFilter = this.context.users.filter(user => user.id === matchingUserId)
-        console.log(recipeFilter)
         if (recipeFilter[0] === undefined) 
             return (
                 <section className="user-landing">
@@ -44,7 +42,7 @@ class UserLanding extends Component {
                             <NavLink to={`/recipes/${recipe.id}`}>
                                 <h2>{recipe.dishname}</h2>
                             </NavLink>
-                            <img src={this.insertImage(recipe.image.data)} />
+                            <img src={`data:${recipe.pic_type};base64,${this.insertImage(recipe.image.data)}`} />
                             <p>{recipe.description}</p>
                         </li>
 

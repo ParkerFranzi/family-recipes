@@ -31,7 +31,23 @@ class App extends Component {
       recipes: recipes
     })
   }
-
+  addRecipe = (recipe) => {
+    this.setState({
+      recipes: [
+        ...this.state.recipes,
+        recipe
+      ]
+    })
+  }
+  addUser = (user) => {
+    console.log("test")
+    this.setState({
+      users: [
+        ...this.state.users,
+        user
+      ]
+    })
+  }
   componentDidMount() {
     //API Fetch when I need to add it
 
@@ -59,6 +75,10 @@ class App extends Component {
     const value = {
       users: this.state.users,
       recipes: this.state.recipes,
+      addUser: this.addUser,
+      addRecipe: this.addRecipe,
+      deleteUser: this.deleteUser,
+      deleteRecipe: this.deleteRecipe
     }
     console.log(this.state)
     return (

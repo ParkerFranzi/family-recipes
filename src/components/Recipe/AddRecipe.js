@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import FamilyContext from '../../FamilyContext'
+import AuthApiService from '../../services/auth-api-service'
 
 
 export default class AddRecipe extends Component {
@@ -22,7 +23,8 @@ export default class AddRecipe extends Component {
             ],
             dishPic: {
                 value: '',
-                touched: false
+                touched: false,
+                file: ''
             },
             recipeCreator: {
                 value: '',
@@ -48,19 +50,14 @@ export default class AddRecipe extends Component {
     updateDescription(description) {
         this.setState({description: {value: description, touched: true}})
     }
-    updateDishPic(dishPic) {
-        this.setState({dishPic: {value: dishPic, touched: true}})
+    updateDishPic(name, dishPic) {
+        this.setState({dishPic: {value: name, touched: true, file: dishPic[0]}})
     }
     updatePrepTime(prepTime) {
         this.setState({prepTime: {value: prepTime, touched: true }})
     }
     updateCookTime(cookTime) {
         this.setState({cookTime: {value: cookTime, touched: true }})
-    }
-    handleSubmit = event => {
-        event.preventDefault()
-        const { dishName, description, ingredients, instructions, dishPicture } = this.state
-        console.log(dishName, description, ingredients)
     }
     handleIngredientNameChange = index => event => {
         const newIngredients = this.state.ingredients.map((ingredient, ingredientIndex) => {
@@ -98,6 +95,58 @@ export default class AddRecipe extends Component {
             instructions: this.state.instructions.filter((instruction, instructionIndex) => index !== instructionIndex)
         })
     }
+    formIngredientList = ingredients => {
+        let ingredientList = []
+        const newLine = { ingredientList }
+        for (let i=0; i<ingredients.length; i++) {
+            ingredientList.push(ingredients[i].ingredient)
+        }
+        return newLine
+    }
+    formInstructionList = instructions => {
+        let instructionList = []
+        const newLine = { instructionList }
+        for (let i=0; i<instructions.length; i++) {
+            instructionList.push(instructions[i].instruction)
+        }
+        return newLine
+    }
+    handleSubmit = e => {
+        e.preventDefault()
+        const { dishName, description, ingredients, instructions, dishPic, prepTime, cookTime, recipeCreator } = this.state
+
+        const ingredientList = this.formIngredientList(ingredients)
+        const instructionList = this.formInstructionList(instructions)
+        console.log(ingredientList)
+
+        let formData = new FormData()
+        formData.append('dishname', dishName.value)
+        formData.append('userid', recipeCreator.value)
+        formData.append('description', description.value)
+        formData.append('preptime', prepTime.value)
+        formData.append('cooktime', cookTime.value)
+        formData.append('image', dishPic.file)
+        formData.append('ingredients', JSON.stringify(ingredientList))
+        formData.append('instructions', JSON.stringify(instructionList))
+
+        for (var value of formData.values()) {
+            console.log(value); 
+         }
+
+        AuthApiService.postRecipe(formData)
+        .then(recipe => {
+            dishName.value = ''
+            description.value = ''
+            ingredients.ingredient = ''
+            instructions.instruction = ''
+            dishPic.value = ''
+            prepTime.value = ''
+            cookTime.value = ''
+            recipeCreator.value = ''
+            this.context.addRecipe(recipe)
+            this.props.history.push(`/recipes/${recipe.id}`)
+        })
+    }
     static contextType = FamilyContext
     render() {
         return (
@@ -106,10 +155,10 @@ export default class AddRecipe extends Component {
                     <div id="dish-name" className="form-row">
                         <label htmlFor="dish-name">Dish Name</label>
                         <input
-                            name="dish-name"
+                            name="dishName"
                             type="text"
                             required
-                            id="dish-name"
+                            id="dishName"
                             onChange={e => this.updateDishName(e.target.value)}
                         />
                     </div>
@@ -117,6 +166,8 @@ export default class AddRecipe extends Component {
                         <label htmlFor="recipe-creator">Recipe Creator</label>
                         <select
                             type="text"
+                            id="recipeCreator"
+                            name="recipeCreator"
                             defaultValue="default"
                             aria-required="true"
                             aria-label="Recipe Creator"
@@ -125,7 +176,7 @@ export default class AddRecipe extends Component {
                         >
                             <option key="default" value="default" disabled>Select the recipe creator</option>
                             {this.context.users.map(user =>
-                                <option key={user.userId} value={user.userId}>{user.fName + " " + user.lName}</option>    
+                                <option key={user.id} value={user.id}>{user.fname + " " + user.lname}</option>    
                             )}
                         </select>
 
@@ -134,6 +185,8 @@ export default class AddRecipe extends Component {
                         <label htmlFor="description">Recipe Description</label>
                         <textarea
                             type="text"
+                            id="description"
+                            name="description"
                             required
                             aria-required="true"
                             aria-label="Recipe Description"
@@ -144,17 +197,21 @@ export default class AddRecipe extends Component {
                         <label htmlFor="prep-time">Prep Time</label>
                         <input
                             type="text"
+                            name="prepTime"
+                            id="prepTime"
                             required
                             aria-required="true"
-                            arai-label="Prep Time"
+                            aria-label="Prep Time"
                             onChange={e => this.updatePrepTime(e.target.value)}
                         />
                         <label htmlFor="cook-time">Cook Time</label>
                         <input
                             type="text"
+                            name="cookTime"
+                            id="cookTime"
                             required
                             aria-required="true"
-                            arai-label="Cook Time"
+                            aria-label="Cook Time"
                             onChange={e => this.updateCookTime(e.target.value)}
                         />
                     </div>
@@ -226,7 +283,7 @@ export default class AddRecipe extends Component {
                             name="dish-picture"
                             accept=".jpg, .jpeg, .png"
                             required
-                            onChange={e => this.updateDishPic(e.target.value)}
+                            onChange={e => this.updateDishPic(e.target.value, e.target.files)}
                         />
                     </div>
                     <button

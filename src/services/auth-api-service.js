@@ -18,13 +18,23 @@ const AuthApiService = {
   postUser(user) {
       return fetch(`${config.API_ENDPOINT}/users`, {
           method: 'POST',
-
           body: user,
       })
         .then(res => 
             (!res.ok)
                 ? res.json().then(e => Promise.reject(e))
                 : res.json()    
+        )
+  },
+  postRecipe(recipe) {
+      return fetch(`${config.API_ENDPOINT}/recipes`, {
+          method: 'POST',
+          body: recipe,
+      })
+      .then(res => 
+          (!res.ok)
+              ? res.json().then(e => Promise.reject(e))
+              : res.json()  
         )
   },
 }

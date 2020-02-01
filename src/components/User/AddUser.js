@@ -4,9 +4,6 @@ import ValidationError from '../../ValidationError'
 import AuthApiService from '../../services/auth-api-service'
 
 export default class AddUser extends Component {
-    static defaultProps = {
-        onRegistrationSuccess: () => {}
-    }
     constructor(props) {
         super(props)
         this.state = {
@@ -76,7 +73,6 @@ export default class AddUser extends Component {
         e.preventDefault()
         
         const { fName, lName, email, password, picture } = e.target
-        console.log(this.state.picture.value, this.state.picture.file)
         let formData = new FormData()
 
         formData.append('fname', fName.value)
@@ -85,9 +81,6 @@ export default class AddUser extends Component {
         formData.append('password', password.value)
         formData.append(`picture`, this.state.picture.file)
 
-        for (var d of formData.entries()) {
-            console.log(d)
-        }
         AuthApiService.postUser(formData)
         .then(user => {
             fName.value = ''
@@ -95,7 +88,9 @@ export default class AddUser extends Component {
             email.value = ''
             password.value = ''
             picture.value = ''
-            this.props.onRegistrationSuccess()
+            console.log(user)
+            this.context.addUser(user)
+            this.props.history.push('/login')
         })
         .catch(res => {
             this.setState({ error: res.error })
