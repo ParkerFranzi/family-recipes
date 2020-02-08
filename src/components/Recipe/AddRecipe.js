@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import FamilyContext from '../../FamilyContext'
 import AuthApiService from '../../services/auth-api-service'
+import ValidationError from '../../ValidationError'
 
 
 export default class AddRecipe extends Component {
@@ -37,8 +38,8 @@ export default class AddRecipe extends Component {
             cookTime: {
                 value: '',
                 touched: false
-            }
-
+            },
+            error: null
         }
     }
     updateDishName(dishName) {
@@ -143,8 +144,14 @@ export default class AddRecipe extends Component {
             prepTime.value = ''
             cookTime.value = ''
             recipeCreator.value = ''
+            recipe.ingredients = ingredientList
+            recipe.instructions = instructionList
+            console.log(recipe)
             this.context.addRecipe(recipe)
             this.props.history.push(`/recipes/${recipe.id}`)
+        })
+        .catch(res => {
+            this.setState({ error: res.error })
         })
     }
     static contextType = FamilyContext
@@ -291,6 +298,7 @@ export default class AddRecipe extends Component {
                     >
                         Submit Recipe
                     </button>
+                    {this.state.error && <ValidationError message={this.state.error} />}
                 </form>
             </div>
         )

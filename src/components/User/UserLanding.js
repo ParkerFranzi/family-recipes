@@ -2,18 +2,11 @@ import React, { Component } from 'react'
 import { Route, Link, NavLink } from 'react-router-dom'
 import FamilyContext from '../../FamilyContext'
 import './UserLanding.css'
+import config from '../../config'
 import Recipe from '../Recipe/Recipe'
 
 class UserLanding extends Component {
     static contextType = FamilyContext
-
-    insertImage = imageValue => {
-        const image = btoa(
-            new Uint8Array(imageValue)
-              .reduce((data, byte) => data + String.fromCharCode(byte), '')
-          );
-        return image
-    }
 
     render() {
         if (!this.context.users.length) {
@@ -42,7 +35,7 @@ class UserLanding extends Component {
                             <NavLink to={`/recipes/${recipe.id}`}>
                                 <h2>{recipe.dishname}</h2>
                             </NavLink>
-                            <img src={`data:${recipe.pic_type};base64,${this.insertImage(recipe.image.data)}`} />
+                            <img  src={`${config.API_ENDPOINT}/recipes/images/${recipe.pic_name}`} />
                             <p>{recipe.description}</p>
                         </li>
 

@@ -1,4 +1,5 @@
 import config from '../config'
+import TokenService from '../services/token-service'
 
 const AuthApiService = {
   postLogin(credentials) {
@@ -20,23 +21,41 @@ const AuthApiService = {
           method: 'POST',
           body: user,
       })
-        .then(res => 
+        .then(res =>
             (!res.ok)
                 ? res.json().then(e => Promise.reject(e))
-                : res.json()    
+                : res.json()   
         )
   },
   postRecipe(recipe) {
       return fetch(`${config.API_ENDPOINT}/recipes`, {
           method: 'POST',
+          headers: {
+            'authorization': `bearer ${TokenService.getAuthToken()}`,
+          },
           body: recipe,
       })
       .then(res => 
           (!res.ok)
               ? res.json().then(e => Promise.reject(e))
-              : res.json()  
+              : res.json() 
         )
   },
+  patchRecipe(recipe, recipeId) {
+      return fetch(`${config.API_ENDPOINT}/recipes/${recipeId}`, {
+          method: 'PATCH',
+          headers: {
+            'authorization': `bearer ${TokenService.getAuthToken()}`,
+          },
+          body: recipe,
+      })
+      .then(res => 
+          (!res.ok)
+              ? res.json().then(e => Promise.reject(e))
+              : res.json()
+        )
+        
+  }
 }
 
 export default AuthApiService

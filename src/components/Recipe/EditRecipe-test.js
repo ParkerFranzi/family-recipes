@@ -3,17 +3,16 @@ import FamilyContext from '../../FamilyContext'
 import AuthApiService from '../../services/auth-api-service'
 import ValidationError from '../../ValidationError'
 import config from '../../config'
-import TokenService from '../../services/token-service'
 
 export default class EditRecipe extends Component {
     constructor(props) {
         super(props)
         this.state = {
             dishName: {
-                value: ''
+                value: this.props.recipe.dishname
             },
             description: {
-                value: ''
+                value: this.props.recipe.description
             },
             ingredients: [
                 { ingredient: '' }
@@ -26,13 +25,13 @@ export default class EditRecipe extends Component {
                 file: ''
             },
             recipeCreator: {
-                value: ''
+                value: this.props.recipe.userid
             },
             prepTime: {
-                value: ''
+                value: this.props.recipe.preptime
             },
             cookTime: {
-                value: ''
+                value: this.props.recipe.cooktime
             }
 
         }
@@ -49,32 +48,6 @@ export default class EditRecipe extends Component {
     }
     updateDishPic(name, dishPic) {
         this.setState({dishPic: {value: name, file: dishPic[0] }})
-    }
-    setDishPic(name, dishPic) {
-        this.setState({dishPic: {value: name, file: dishPic }})
-    }
-    setIngredients(ingredient) {
-        this.setState({ 
-            ingredients: [{ ingredient: ingredient.ingredientList[0] }]
-        })
-        for (let i=1; i<ingredient.ingredientList.length; i++) {
-            this.setState({
-                ingredients: this.state.ingredients.concat([{ ingredient: ingredient.ingredientList[i] }])
-            })
-            console.log(this.state)
-        }
-    }
-    setInstructions(instruction) {
-        this.setState({ 
-            instructions: [{ instruction: instruction.instructionList[0] }]
-        })
-        for (let i=1; i<instruction.instructionList.length; i++) {
-            this.setState({
-                instructions: this.state.instructions.concat([{ instruction: instruction.instructionList[i] }])
-            })
-            console.log(this.state)
-        }
-        
     }
     updatePrepTime(prepTime) {
         this.setState({prepTime: {value: prepTime }})
@@ -105,7 +78,9 @@ export default class EditRecipe extends Component {
 
         const ingredientList = this.formIngredientList(ingredients)
         const instructionList = this.formInstructionList(instructions)
-        const recipeId = this.props.match.params.recipeId
+        const recipeId = this.props.recipe.id
+
+        console.log(dishPic.file)
 
         let formData = new FormData()
         formData.append('dishname', dishName.value)
@@ -116,6 +91,10 @@ export default class EditRecipe extends Component {
         formData.append('image', dishPic.file)
         formData.append('ingredients', JSON.stringify(ingredientList))
         formData.append('instructions', JSON.stringify(instructionList))
+
+        for (var value of formData.values()) {
+            console.log(value); 
+         }
 
         AuthApiService.patchRecipe(formData, recipeId)
         .then(recipe => {
@@ -130,9 +109,7 @@ export default class EditRecipe extends Component {
             recipe.ingredients = ingredientList
             recipe.instructions = instructionList
             this.context.updateRecipe(recipe)
-            console.log("help")
             this.props.history.push(`/recipes/${recipe.id}`)
-            console.log("test")
         })
         .catch(res => {
             this.setState({ error: res.error })
@@ -174,38 +151,30 @@ export default class EditRecipe extends Component {
             instructions: this.state.instructions.filter((instruction, instructionIndex) => index !== instructionIndex)
         })
     }
+    handleIngredientInitialState() {
+       const ingredientList = this.props.recipe.ingredients.ingredientList
+       const ingredientArray = []
+       ingredientList.forEach(ingredient => {
+           ingredientArray.push({ingredient})
+       })
+       this.setState({ ingredients: ingredientArray})
+
+    }
+    handleInstructionInitialState() {
+        const instructionList = this.props.recipe.instructions.instructionList
+        const instructionArray = []
+        instructionList.forEach(instruction => {
+            instructionArray.push({instruction})
+        })
+        this.setState({ instructions: instructionArray })
+    }
     componentDidMount() {
-        fetch(`${config.API_ENDPOINT}/recipes/edit-recipe/${this.props.match.params.recipeId}`, {
-            headers: {
-              'authorization': `bearer ${TokenService.getAuthToken()}`,
-            },
-        })
-        .then(res =>
-            (!res.ok)
-            ? res.json().then(e => Promise.reject(e))
-            : res.json()
-        )
-        .then(recipe => {
-            this.updateDishName(recipe[0].dishname)
-            this.setDishPic(recipe[0].pic_name, recipe[0].image)
-            this.updateDescription(recipe[0].description)
-            this.updateCookTime(recipe[0].cooktime)
-            this.updatePrepTime(recipe[0].preptime)
-            this.setIngredients(recipe[0].ingredients)
-            this.setInstructions(recipe[0].instructions)
-        })
-        .catch(res => {
-            this.setState({ error: res.error })
-        })
+        this.handleIngredientInitialState();
+        this.handleInstructionInitialState();
     }
     static contextType = FamilyContext
     render() {
-        if (!this.context.recipes.length) {
-            return <ul></ul>
-        }
-        console.log(this.state)
-        const matchingRecipe = Number(this.props.match.params.recipeId)
-        const recipeFilter = this.context.recipes.filter(recipe => recipe.id === matchingRecipe)
+        const matchingRecipe = Number(this.props.recipe.id)
         return (
             <div className="edit-recipe-form">
                 <form onSubmit={this.handleSubmit}>
@@ -215,7 +184,7 @@ export default class EditRecipe extends Component {
                             name="dish-name"
                             type="text"
                             required
-                            value={this.state.dishName.value}
+                            defaultValue={this.state.dishName.value}
                             id="dish-name"
                             onChange={e => this.updateDishName(e.target.value)}
                         />
@@ -224,7 +193,7 @@ export default class EditRecipe extends Component {
                         <label htmlFor="recipe-creator">Recipe Creator</label>
                         <select
                             type="text"
-                            value={this.state.recipeCreator.value}
+                            defaultValue={this.state.recipeCreator.value}
                             required
                             aria-label="Recipe Creator"
                             onChange={e => this.updateRecipeCreator(e.target.value)}
@@ -297,6 +266,7 @@ export default class EditRecipe extends Component {
                     <div id="instructions-list" className="form-row">
                         <label htmlFor="instructions">Directions</label>
                         {this.state.instructions.map((instruction, index) => (
+                            
                             <div className="instructions" key={instruction + index}>
                                 <input
                                     type="text"
@@ -333,7 +303,7 @@ export default class EditRecipe extends Component {
                             onChange={e => this.updateDishPic(e.target.value, e.target.files)}
                         />
                         <div className="current-picture">
-                            Current Picture: <img src={`${config.API_ENDPOINT}/recipes/images/${recipeFilter[0].pic_name}`} />
+                            Current Picture: <img src={`${config.API_ENDPOINT}/recipes/images/${matchingRecipe}`} />
                         </div>
                     </div>
                     <button

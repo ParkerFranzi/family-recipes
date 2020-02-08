@@ -1,16 +1,42 @@
 import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
+import AuthApiService from '../../services/auth-api-service'
+import TokenService from '../../services/token-service'
+import ValidationError from '../../ValidationError'
 
 export default class UserLogin extends Component {
-    handleSubmit = e => {
+    constructor(props) {
+        super(props)
+        this.state = {
+            error: null
+        }
+    }
+    static defaultProps = {
+        onLoginSuccess: () => {}
+    }
+
+    handleSubmitJwtAuth = e => {
         e.preventDefault()
-        alert("User would be logged in and redirected to home page")
+        this.setState({ error: null })
+        const { email, password } = e.target
+
+        AuthApiService.postLogin({
+            email: email.value,
+            password: password.value,
+        })
+        .then(res => {
+            email.value = ''
+            password.value = ''
+            TokenService.saveAuthToken(res.authToken)
+            this.props.onLoginSuccess()
+        })
+        .catch(res => {
+            this.setState({ error: res.error })
+        })
     }
     render() {
         return (
-            <section className="user-login">
-                <h2>User Login</h2>
-                <form onSubmit={e => this.handleSubmit(e)}>
+                <form onSubmit={this.handleSubmitJwtAuth}>
                     <label htmlFor="email">Email</label>
                     <input
                         type="text"
@@ -22,7 +48,7 @@ export default class UserLogin extends Component {
                     />
                     <label htmlFor="password">Password</label>
                     <input
-                        type="text"
+                        type="password"
                         className="password"
                         name="password"
                         id="password"
@@ -35,14 +61,14 @@ export default class UserLogin extends Component {
                     >
                         Login
                     </button>
-                    
+                    {this.state.error && <ValidationError message={this.state.error} />}
                     <NavLink to={`/register`}>
                         <div className="register-link">
                             <p>Need to register still?</p>
                         </div>
                     </NavLink>               
                 </form>
-            </section>
+
         )
     }
 }

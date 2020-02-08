@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import FamilyContext from '../../FamilyContext'
 import './Recipe.css'
+import { Link } from 'react-router-dom'
 import EditRecipe from './EditRecipe'
+import config from '../../config'
 
 export default class Recipe extends Component {
     state = {
@@ -18,24 +20,22 @@ export default class Recipe extends Component {
         if (!this.context.recipes.length) {
             return <ul></ul>
         }
+        console.log(this.context)
         const matchingRecipe = Number(this.props.match.params.recipeId)
         const recipeFilter = this.context.recipes.filter(recipe => recipe.id === matchingRecipe)
 
         const ingredientArray = recipeFilter[0].ingredients.ingredientList
         const instructionArray = recipeFilter[0].instructions.instructionList
 
-        const image = btoa(
-            new Uint8Array(recipeFilter[0].image.data)
-              .reduce((data, byte) => data + String.fromCharCode(byte), '')
-          );
         
         return (
             <section className="recipe">
                 <h1>{recipeFilter[0].dishname}</h1>
-                <img src={`data:${recipeFilter[0].pic_type};base64,${image}`} />
+                <img src={`${config.API_ENDPOINT}/recipes/images/${recipeFilter[0].pic_name}`} />
                 <p className="description">{recipeFilter[0].description}</p>
                 <p className="prep-time">Prep Time: {recipeFilter[0].preptime}</p>
                 <p className="cook-time">Cook Time: {recipeFilter[0].cooktime}</p>
+                <p>Ingredients</p>
                 <ul className="ingredients">
                     {ingredientArray.map((ingredient, index) =>
                         <li key={index + ingredient}>
@@ -44,14 +44,15 @@ export default class Recipe extends Component {
                         </li>   
                     )}
                 </ul>
+                <p>Instructions</p>
                 <ul className="instructions">
                     {instructionArray.map((instruction, index) =>
                         <li key={index + instruction}>
-                            <p>{(index + 1) + ": " + instruction}}</p> 
+                            <p>{(index + 1) + ": " + instruction}</p> 
                         </li>   
                     )}
                 </ul>
-                {this.state.edit && <EditRecipe recipe={recipeFilter[0]} />}
+                {this.state.edit && <Link to={`/edit-recipe/${matchingRecipe}`}>Edit Recipe</Link>}
                 {!this.state.edit && <button onClick={this.handleEdit}>Edit Recipe</button>}
                 
                 

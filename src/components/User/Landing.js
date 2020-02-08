@@ -9,9 +9,8 @@ export default class Landing extends Component {
     render() {
         const { users } = this.context
         const sortedList = users.sort((a, b) => a.id - b.id)
-
         const userList = sortedList.map((user, key) => <UserList {...user} key={key} />)
-        
+        console.log(users)
         return (
             <div className="landing-page">
                 {userList}

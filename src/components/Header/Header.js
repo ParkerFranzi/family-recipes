@@ -1,18 +1,27 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import FamilyContext from '../../FamilyContext'
 
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-//import TokenService from '../../services/token-service'
+import TokenService from '../../services/token-service'
 import './Header.css'
 
 export default class Header extends Component {
+  static contextType = FamilyContext
+
   handleLogoutClick = () => {
-    //TokenService.clearAuthToken()
+    TokenService.clearAuthToken()
+    this.context.loggedOut()
   }
 
   renderLogoutLink() {
     return (
       <div className='Header__logged-in'>
+        <Link
+          to='/add-recipe'
+        >
+          Add Recipe 
+        </Link>
         <Link
           onClick={this.handleLogoutClick}
           to='/'>
@@ -26,11 +35,6 @@ export default class Header extends Component {
     return (
       <div className='Header__not-logged-in'>
         <Link
-          to='/add-recipe'
-        >
-          Add Recipe 
-        </Link>
-        <Link
           to='/login'>
           Log in
         </Link>
@@ -41,7 +45,6 @@ export default class Header extends Component {
       </div>
     )
   }
-
   render() {
     return <>
       <nav className='Header'>
@@ -51,9 +54,9 @@ export default class Header extends Component {
           </Link>
         </h1>
         <span className='Header__tagline--wide'>Cook your family favorites</span>
-        {/*TokenService.hasAuthToken()
+        {this.context.isUserLoggedIn
           ? this.renderLogoutLink()
-        :*/ this.renderLoginLink()}
+          : this.renderLoginLink()}
       </nav>
 
       <span className='Header__tagline--narrow'>Cook your family favorites</span>

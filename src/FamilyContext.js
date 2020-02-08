@@ -3,14 +3,17 @@ import React, { Component } from 'react'
 const FamilyContext = React.createContext({
   users: [],
   recipes: [],
+  isUserLoggedIn: '',
   addRecipe: () => {},
   deleteRecipe: () => {},
-  editRecipe: () => {},
+  updateRecipe: () => {},
   handleDeleteRecipeClick: () => {},
   addUser: () => {},
   deleteUser: () => {},
   editUser: () => {},
   handleDeleteUserClick: () => {},
+  loggedIn: () => {},
+  loggedOut: () => {},
 })
 
 export default FamilyContext
