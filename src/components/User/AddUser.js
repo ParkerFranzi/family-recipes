@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import FamilyContext from '../../FamilyContext'
 import ValidationError from '../../ValidationError'
 import AuthApiService from '../../services/auth-api-service'
+import { Roller } from 'react-awesome-spinners'
 
 export default class AddUser extends Component {
     constructor(props) {
@@ -28,6 +29,7 @@ export default class AddUser extends Component {
                 touched: false, 
                 file: ''
             }, 
+            loading: false,
             error: null
         }
     }
@@ -56,8 +58,8 @@ export default class AddUser extends Component {
     }
     validatePassword() {
         const password = this.state.password.value.trim()
-        if (password.length < 5) {
-            return "Please enter a password longer than 5 characters"
+        if (password.length < 8) {
+            return "Please enter a password longer at least 8 characters"
         }
     }
     validateLastName() {
@@ -71,7 +73,7 @@ export default class AddUser extends Component {
     }
     handleSubmit = e => {
         e.preventDefault()
-        
+        this.setState({loading: true})
         const { fName, lName, email, password, picture } = e.target
         let formData = new FormData()
 
@@ -89,10 +91,12 @@ export default class AddUser extends Component {
             password.value = ''
             picture.value = ''
             console.log(user)
+            this.setState({loading: false})
             this.context.addUser(user)
             this.props.history.push('/login')
         })
         .catch(res => {
+            this.setState({loading: false})
             this.setState({ error: res.error })
         })
     }
@@ -177,6 +181,7 @@ export default class AddUser extends Component {
                         >
                             Register
                         </button>
+                        {this.state.loading && <Roller />}
                         {this.state.error && (<ValidationError message={this.state.error} />)}
                     </div>
                 </form>

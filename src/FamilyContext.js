@@ -14,6 +14,8 @@ const FamilyContext = React.createContext({
   handleDeleteUserClick: () => {},
   loggedIn: () => {},
   loggedOut: () => {},
+  clearError: () => {},
+  serError: () => {},
 })
 
 export default FamilyContext

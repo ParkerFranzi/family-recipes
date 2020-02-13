@@ -4,6 +4,7 @@ import AuthApiService from '../../services/auth-api-service'
 import ValidationError from '../../ValidationError'
 import config from '../../config'
 import TokenService from '../../services/token-service'
+import { Roller } from 'react-awesome-spinners'
 
 export default class EditRecipe extends Component {
     constructor(props) {
@@ -25,6 +26,9 @@ export default class EditRecipe extends Component {
                 value: '',
                 file: ''
             },
+            public_id: {
+                value: ''
+            },
             recipeCreator: {
                 value: ''
             },
@@ -33,7 +37,8 @@ export default class EditRecipe extends Component {
             },
             cookTime: {
                 value: ''
-            }
+            },
+            loading: false
 
         }
     }
@@ -52,6 +57,10 @@ export default class EditRecipe extends Component {
     }
     setDishPic(name, dishPic) {
         this.setState({dishPic: {value: name, file: dishPic }})
+    }
+    setPublicId(public_id) {
+        this.setState({ public_id: { value: public_id }})
+        console.log(public_id)
     }
     setIngredients(ingredient) {
         this.setState({ 
@@ -100,9 +109,9 @@ export default class EditRecipe extends Component {
     }
     handleSubmit = event => {
         event.preventDefault()
-
-        const { dishName, description, ingredients, instructions, dishPic, prepTime, cookTime, recipeCreator } = this.state
-
+        this.setState({ loading: true })
+        const { dishName, description, ingredients, instructions, dishPic, prepTime, cookTime, public_id, recipeCreator } = this.state
+        console.log(public_id)
         const ingredientList = this.formIngredientList(ingredients)
         const instructionList = this.formInstructionList(instructions)
         const recipeId = this.props.match.params.recipeId
@@ -114,8 +123,10 @@ export default class EditRecipe extends Component {
         formData.append('preptime', prepTime.value)
         formData.append('cooktime', cookTime.value)
         formData.append('image', dishPic.file)
+        formData.append('public_id', public_id.value)
         formData.append('ingredients', JSON.stringify(ingredientList))
         formData.append('instructions', JSON.stringify(instructionList))
+        formData.append('current_user', TokenService.getUserId())
 
         AuthApiService.patchRecipe(formData, recipeId)
         .then(recipe => {
@@ -129,12 +140,14 @@ export default class EditRecipe extends Component {
             recipeCreator.value = ''
             recipe.ingredients = ingredientList
             recipe.instructions = instructionList
+            this.setState({ loading: false })
             this.context.updateRecipe(recipe)
             console.log("help")
             this.props.history.push(`/recipes/${recipe.id}`)
             console.log("test")
         })
         .catch(res => {
+            this.setState({ loading: false })
             this.setState({ error: res.error })
         })
     }
@@ -175,6 +188,7 @@ export default class EditRecipe extends Component {
         })
     }
     componentDidMount() {
+        this.setState({loading: true})
         fetch(`${config.API_ENDPOINT}/recipes/edit-recipe/${this.props.match.params.recipeId}`, {
             headers: {
               'authorization': `bearer ${TokenService.getAuthToken()}`,
@@ -193,8 +207,13 @@ export default class EditRecipe extends Component {
             this.updatePrepTime(recipe[0].preptime)
             this.setIngredients(recipe[0].ingredients)
             this.setInstructions(recipe[0].instructions)
+            this.updateRecipeCreator(recipe[0].userid)
+            console.log(recipe[0])
+            this.setPublicId(recipe[0].public_id)
+            this.setState({ loading: false })
         })
         .catch(res => {
+            this.setState({ loading: false })
             this.setState({ error: res.error })
         })
     }
@@ -203,7 +222,9 @@ export default class EditRecipe extends Component {
         if (!this.context.recipes.length) {
             return <ul></ul>
         }
-        console.log(this.state)
+        const role = TokenService.getUserRole()
+        const id = TokenService.getUserId()
+        console.log(this.state, role, id)
         const matchingRecipe = Number(this.props.match.params.recipeId)
         const recipeFilter = this.context.recipes.filter(recipe => recipe.id === matchingRecipe)
         return (
@@ -220,6 +241,7 @@ export default class EditRecipe extends Component {
                             onChange={e => this.updateDishName(e.target.value)}
                         />
                     </div>
+                    {role === 3 && 
                     <div id="recipe-creator" className="form-row">
                         <label htmlFor="recipe-creator">Recipe Creator</label>
                         <select
@@ -235,7 +257,8 @@ export default class EditRecipe extends Component {
                             )}
                         </select>
 
-                    </div>
+                    </div>}
+
                     <div id="recipe-description" className="form-row">
                         <label htmlFor="description">Recipe Description</label>
                         <textarea
@@ -333,7 +356,7 @@ export default class EditRecipe extends Component {
                             onChange={e => this.updateDishPic(e.target.value, e.target.files)}
                         />
                         <div className="current-picture">
-                            Current Picture: <img src={`${config.API_ENDPOINT}/recipes/images/${recipeFilter[0].pic_name}`} />
+                            Current Picture: <img src={`${recipeFilter[0].image}`} />
                         </div>
                     </div>
                     <button
@@ -341,6 +364,7 @@ export default class EditRecipe extends Component {
                     >
                         Edit Recipe
                     </button>
+                    {this.state.loading && <Roller />}
                     {this.state.error && <ValidationError message={this.state.error} />}
                 </form>
             </div>

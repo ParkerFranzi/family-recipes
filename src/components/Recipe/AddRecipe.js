@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import FamilyContext from '../../FamilyContext'
 import AuthApiService from '../../services/auth-api-service'
 import ValidationError from '../../ValidationError'
+import { Roller } from 'react-awesome-spinners'
 
 
 export default class AddRecipe extends Component {
@@ -39,6 +40,7 @@ export default class AddRecipe extends Component {
                 value: '',
                 touched: false
             },
+            loading: false,
             error: null
         }
     }
@@ -114,6 +116,7 @@ export default class AddRecipe extends Component {
     }
     handleSubmit = e => {
         e.preventDefault()
+        this.setState({loading: true})
         const { dishName, description, ingredients, instructions, dishPic, prepTime, cookTime, recipeCreator } = this.state
 
         const ingredientList = this.formIngredientList(ingredients)
@@ -148,9 +151,11 @@ export default class AddRecipe extends Component {
             recipe.instructions = instructionList
             console.log(recipe)
             this.context.addRecipe(recipe)
+            this.setState({ loading: false })
             this.props.history.push(`/recipes/${recipe.id}`)
         })
         .catch(res => {
+            this.setState({ loading: false })
             this.setState({ error: res.error })
         })
     }
@@ -298,6 +303,7 @@ export default class AddRecipe extends Component {
                     >
                         Submit Recipe
                     </button>
+                    {this.state.loading && <Roller />}
                     {this.state.error && <ValidationError message={this.state.error} />}
                 </form>
             </div>

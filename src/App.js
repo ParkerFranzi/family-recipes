@@ -5,9 +5,7 @@ import Header from './components/Header/Header'
 import PrivateRoute from './components/Utils/PrivateRoute'
 import PublicOnlyRoute from './components/Utils/PublicOnlyRoute'
 import AddUser from './components/User/AddUser'
-import UserError from './components/User/UserError'
 import AddRecipe from './components/Recipe/AddRecipe'
-import RecipeError from './components/Recipe/RecipeError'
 import Recipe from './components/Recipe/Recipe'
 import Landing from './components/User/Landing'
 import UserLanding from './components/User/UserLanding'
@@ -24,7 +22,8 @@ class App extends Component {
         users: [],
         recipes: [],
         isUserLoggedIn: false,
-        hasError: false
+        hasError: false,
+        error: null
       }
   }
 
@@ -34,6 +33,13 @@ class App extends Component {
     return { hasError: true };
   }
   
+  clearError = () => {
+    this.setState({ error: null })
+  }
+  setError = error => {
+    console.error(error)
+    this.setState({ error })
+  }
   setUsers = users => {
     this.setState({
       users: users
@@ -117,7 +123,9 @@ class App extends Component {
       updateRecipe: this.updateRecipe,
       loggedIn: this.loggedIn,
       loggedOut: this.loggedOut,
-      isUserLoggedIn: this.state.isUserLoggedIn
+      isUserLoggedIn: this.state.isUserLoggedIn,
+      setError: this.setError,
+      clearError: this.clearError
     }
     return (
       <FamilyContext.Provider value={value}>

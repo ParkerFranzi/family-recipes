@@ -27,7 +27,8 @@ export default class UserLogin extends Component {
         .then(res => {
             email.value = ''
             password.value = ''
-            TokenService.saveAuthToken(res.authToken)
+            TokenService.saveAuthToken(res.authToken, res.user_id, res.role)
+            
             this.props.onLoginSuccess()
         })
         .catch(res => {

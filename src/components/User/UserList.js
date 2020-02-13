@@ -5,13 +5,13 @@ import config from '../../config'
 export default class UserList extends Component {
 
     render() {
-        
+        console.log(this.props)
 
         return (
             <NavLink to={`/users/${this.props.id}`}>
                 <div className="user-box">
                     <div className="user-img">
-                        <img  src={`${config.API_ENDPOINT}/users/images/${this.props.id}`} />
+                        <img  src={`${this.props.picture}`} />
                     </div>
                     <div className="user-name">
                         <h3>{this.props.fname + " " + this.props.lname}</h3>

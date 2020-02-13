@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { Route, Link, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import FamilyContext from '../../FamilyContext'
 import './UserLanding.css'
 import config from '../../config'
-import Recipe from '../Recipe/Recipe'
+
 
 class UserLanding extends Component {
     static contextType = FamilyContext
@@ -35,7 +35,7 @@ class UserLanding extends Component {
                             <NavLink to={`/recipes/${recipe.id}`}>
                                 <h2>{recipe.dishname}</h2>
                             </NavLink>
-                            <img  src={`${config.API_ENDPOINT}/recipes/images/${recipe.pic_name}`} />
+                            <img  src={`${recipe.image}`} />
                             <p>{recipe.description}</p>
                         </li>
 
