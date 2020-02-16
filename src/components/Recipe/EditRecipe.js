@@ -38,7 +38,8 @@ export default class EditRecipe extends Component {
             cookTime: {
                 value: ''
             },
-            loading: false
+            loading: false,
+            deleteCheck: false,
 
         }
     }
@@ -138,6 +139,7 @@ export default class EditRecipe extends Component {
             prepTime.value = ''
             cookTime.value = ''
             recipeCreator.value = ''
+            public_id.value = ''
             recipe.ingredients = ingredientList
             recipe.instructions = instructionList
             this.setState({ loading: false })
@@ -187,6 +189,22 @@ export default class EditRecipe extends Component {
             instructions: this.state.instructions.filter((instruction, instructionIndex) => index !== instructionIndex)
         })
     }
+    handleDeleteCheck = () => {
+        this.setState({
+            deleteCheck: true
+        })
+    }
+    handleDeleteRecipe = event  => {
+        event.preventDefault()
+        AuthApiService.deleteRecipe(this.props.match.params.recipeId)
+        .then(() => {
+            this.context.deleteRecipe(this.props.match.params.recipeId)
+            this.props.history.push(`/`)
+        })
+        .catch(res => {
+            this.setState({ error: res.error })
+        })
+    }
     componentDidMount() {
         this.setState({loading: true})
         fetch(`${config.API_ENDPOINT}/recipes/edit-recipe/${this.props.match.params.recipeId}`, {
@@ -194,7 +212,7 @@ export default class EditRecipe extends Component {
               'authorization': `bearer ${TokenService.getAuthToken()}`,
             },
         })
-        .then(res =>
+        .then(res => 
             (!res.ok)
             ? res.json().then(e => Promise.reject(e))
             : res.json()
@@ -227,6 +245,11 @@ export default class EditRecipe extends Component {
         console.log(this.state, role, id)
         const matchingRecipe = Number(this.props.match.params.recipeId)
         const recipeFilter = this.context.recipes.filter(recipe => recipe.id === matchingRecipe)
+        if (recipeFilter[0] === undefined) {
+            return <div className="edit-recipe-form">
+                <p>Recipe not found</p>
+            </div>
+        }
         return (
             <div className="edit-recipe-form">
                 <form onSubmit={this.handleSubmit}>
@@ -367,6 +390,22 @@ export default class EditRecipe extends Component {
                     {this.state.loading && <Roller />}
                     {this.state.error && <ValidationError message={this.state.error} />}
                 </form>
+                <div id="delete-recipe">
+                    {!this.state.deleteCheck && <button onClick={this.handleDeleteCheck}>Delete Recipe</button>}
+                    {this.state.deleteCheck && 
+                        <div className="delete">
+                            Are you sure you want to delete recipe?
+                            <button 
+                                type="button"
+                                className="deleteButton"
+                                onClick={this.handleDeleteRecipe}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    }
+                </div>
+
             </div>
         )
     }

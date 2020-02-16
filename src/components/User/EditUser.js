@@ -2,6 +2,9 @@ import React, { Component } from "react"
 import FamilyContext from '../../FamilyContext'
 import ValidationError from '../../ValidationError'
 import AuthApiService from '../../services/auth-api-service'
+import config from '../../config'
+import TokenService from '../../services/token-service'
+import { Roller } from 'react-awesome-spinners'
 
 export default class AddUser extends Component {
     static defaultProps = {
@@ -12,25 +15,32 @@ export default class AddUser extends Component {
         this.state = {
             fName: {
                 value: '',
-                touched: false
             },
             lName: {
                 value: '',
-                touched: false
+
             },
             email: {
                 value: '',
-                touched: false
             },
             password: {
                 value: '',
-                touched: false
+
+            },
+            newPassword: {
+                value: '',
+            },
+            confirmPassword: {
+                value: '',
             },
             picture: {
                 value: '',
-                touched: false, 
                 file: ''
-            }, 
+            },
+            public_id: {
+                value: ''
+            },
+            loading: false, 
             error: null
         }
     }
@@ -47,10 +57,22 @@ export default class AddUser extends Component {
     updatePassword(password) {
         this.setState({password: {value: password, touched: true }})
     }
-    updatepicture(name, picture) {
+    updateNewPassword(newPassword) {
+        this.setState({newPassword: {value: newPassword, touched: true }})
+    }
+    updateConfirmPassword(confirmPassword) {
+        this.setState({confirmPassword: {value: confirmPassword, touched: true }})
+    }
+    updatePicture(name, picture) {
         this.setState({picture: {value: name, touched: true, file: picture[0] }})
     }
-
+    setPicture(name, picture) {
+        this.setState({picture: {value: name, file: picture }})
+    }
+    setPublicId(public_id) {
+        this.setState({ public_id: { value: public_id }})
+        console.log(public_id)
+    }
     validateFirstName() {
         const fName = this.state.fName.value.trim()
         if (fName.length === 0) {
@@ -69,35 +91,72 @@ export default class AddUser extends Component {
             return "Please enter a last name"
         }
     }
-    validatepicture() {
 
-    }
     handleSubmit = e => {
         e.preventDefault()
-        
-        const { fName, lName, email, password, picture } = e.target
-        console.log(this.state.picture.value, this.state.picture.file)
+        this.setState({loading: true})
+        const { fName, lName, email, password, picture, newPassword, confirmPassword, public_id } = this.state
         let formData = new FormData()
 
         formData.append('fname', fName.value)
         formData.append('lname', lName.value)
         formData.append('email', email.value)
         formData.append('password', password.value)
-        formData.append(`picture`, this.state.picture.file)
-
+        formData.append('new_password', newPassword.value)
+        formData.append('new_password_confirm', confirmPassword.value)
+        formData.append('public_id', public_id.value)
+        formData.append('picture', picture.file)
+        console.log(this.state)
         for (var d of formData.entries()) {
             console.log(d)
         }
-        AuthApiService.postUser(formData)
+        AuthApiService.patchUser(formData, this.props.match.params.userId)
         .then(user => {
             fName.value = ''
             lName.value = ''
             email.value = ''
             password.value = ''
             picture.value = ''
-            this.props.onRegistrationSuccess()
+            newPassword.value = ''
+            confirmPassword.value = ''
+            public_id.value = ''
+            this.setState({ loading: false })
+            console.log(1)
+            this.context.updateUser(user)
+            console.log(user)
+            this.props.history.push(`/users/${user.id}`)
+            console.log(test)
         })
         .catch(res => {
+            this.setState({ loading: false })
+            this.setState({ error: res.error })
+        })
+    }
+
+    componentDidMount() {
+        this.setState({loading: true})
+        fetch(`${config.API_ENDPOINT}/users/edit-user/${this.props.match.params.userId}`, {
+            headers: {
+                'authorization': `bearer ${TokenService.getAuthToken()}`,
+                'role': `${TokenService.getUserRole()}`,
+                'id': `${TokenService.getUserId()}`
+              },
+        })
+        .then(res =>
+            (!res.ok)
+            ? res.json().then(e => Promise.reject(e))
+            : res.json()
+        )
+        .then(user => {
+            this.updateFirstName(user[0].fname)
+            this.updateLastName(user[0].lname)
+            this.setPicture(user[0].pic_name, user[0].picture)
+            this.setPublicId(user[0].public_id)
+            this.setState({ loading: false })
+            this.updateEmail(user[0].email)
+        })
+        .catch(res => {
+            this.setState({ loading: false })
             this.setState({ error: res.error })
         })
     }
@@ -114,7 +173,8 @@ export default class AddUser extends Component {
                         <label htmlFor="fName">First Name *</label>
                         <input 
                             type="text" 
-                            className="fName" 
+                            className="fName"
+                            value={this.state.fName.value}
                             name="fName" 
                             id="fName"
                             aria-required="true"
@@ -127,7 +187,8 @@ export default class AddUser extends Component {
                         <label htmlFor="lName">Last Name *</label>
                         <input 
                             type="text" 
-                            className="lName" 
+                            className="lName"
+                            value={this.state.lName.value}
                             name="lName" 
                             id="lName"
                             aria-required="true"
@@ -137,7 +198,8 @@ export default class AddUser extends Component {
                     </div>
                     <div className="form-row">
                         <label htmlFor="email">Email *</label>
-                        <input 
+                        {this.state.email.value}
+                        {/* <input 
                             type="email"
                             className="email"
                             name="email"
@@ -145,11 +207,11 @@ export default class AddUser extends Component {
                             aria-required="true"
                             aria-label="email"
                             onChange={e => this.updateEmail(e.target.value)}
-                        />
+                        /> */}
                     </div>
                     {this.state.password.touched && (<ValidationError message={passwordError} />)}
                     <div className="form-row">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">Current Password</label>
                         <input
                             type="password" 
                             className="password" 
@@ -160,13 +222,35 @@ export default class AddUser extends Component {
                         />
                     </div>
                     <div className="form-row">
+                        <label htmlFor="new-password">New Password</label>
+                        <input
+                            type="password" 
+                            className="new-password" 
+                            name="new-password" 
+                            id="new-password"
+                            aria-label="new-password"
+                            onChange={e => this.updateNewPassword(e.target.value)}
+                        />
+                    </div>
+                    <div className="form-row">
+                        <label htmlFor="confirm-password">Confirm Password</label>
+                        <input
+                            type="password" 
+                            className="confirm-password" 
+                            name="confirm-password" 
+                            id="confirm-password"
+                            aria-label="confirm-password"
+                            onChange={e => this.updateConfirmPassword(e.target.value)}
+                        />
+                    </div>
+                    <div className="form-row">
                         <label htmlFor="picture">Profile Picture</label>
                         <input
                             type="file"
                             id="picture"
                             name="picture"
                             accept=".jpg, .jpeg, .png"
-                            onChange={e => this.updatepicture(e.target.value, e.target.files)}
+                            onChange={e => this.updatePicture(e.target.value, e.target.files)}
                         />
                     </div>
                     <div className="form-row">
@@ -176,12 +260,12 @@ export default class AddUser extends Component {
                             disabled={
                                 this.validateFirstName() ||
                                 this.validateLastName() ||
-                                this.validatePassword() ||
-                                this.validatepicture()
+                                this.validatePassword()
                             }
                         >
-                            Register
+                            Update User
                         </button>
+                        {this.state.loading && <Roller />}
                         {this.state.error && (<ValidationError message={this.state.error} />)}
                     </div>
                 </form>

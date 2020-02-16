@@ -13,10 +13,14 @@ export default class Header extends Component {
     TokenService.clearAuthToken()
     this.context.loggedOut()
   }
-
   renderLogoutLink() {
     return (
       <div className='Header__logged-in'>
+        <Link
+          to={`/edit-user/${TokenService.getUserId()}`}
+        >
+          Edit Account
+        </Link>
         <Link
           to='/add-recipe'
         >

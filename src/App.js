@@ -11,6 +11,7 @@ import Landing from './components/User/Landing'
 import UserLanding from './components/User/UserLanding'
 import LoginPage from './components/Login/LoginPage'
 import EditRecipe from './components/Recipe/EditRecipe'
+import EditUser from './components/User/EditUser'
 import config from './config'
 import TokenService from './services/token-service'
 
@@ -70,10 +71,27 @@ class App extends Component {
     })
     console.log(this.state)
   }
+  deleteRecipe = (recipeId) => {
+    const recipeFiltered = this.state.recipes.filter(recipes => recipes.id !== recipeId)
+    this.setState({
+      recipes: [
+        ...recipeFiltered
+      ]
+    })
+  }
   addUser = (user) => {
     this.setState({
       users: [
         ...this.state.users,
+        user
+      ]
+    })
+  }
+  updateUser = (user) => {
+    const userFilterd = this.state.users.filter(users => users.id !== user.id)
+    this.setState({
+      users: [
+        ...userFilterd,
         user
       ]
     })
@@ -118,6 +136,7 @@ class App extends Component {
       recipes: this.state.recipes,
       addUser: this.addUser,
       addRecipe: this.addRecipe,
+      updateUser: this.updateUser,
       deleteUser: this.deleteUser,
       deleteRecipe: this.deleteRecipe,
       updateRecipe: this.updateRecipe,
@@ -148,6 +167,10 @@ class App extends Component {
             <PrivateRoute
               exact path='/add-recipe'
               component={AddRecipe}
+            />
+            <PrivateRoute
+              path='/edit-user/:userId'
+              component={EditUser}
             />
             <Route
               path='/users/:userId'

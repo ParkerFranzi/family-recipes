@@ -23,7 +23,11 @@ export default class Recipe extends Component {
         console.log(this.context)
         const matchingRecipe = Number(this.props.match.params.recipeId)
         const recipeFilter = this.context.recipes.filter(recipe => recipe.id === matchingRecipe)
-
+        if (recipeFilter[0] === undefined) {
+            return <div className="edit-recipe-form">
+                <p>Recipe not found</p>
+            </div>
+        }
         const ingredientArray = recipeFilter[0].ingredients.ingredientList
         const instructionArray = recipeFilter[0].instructions.instructionList
 
