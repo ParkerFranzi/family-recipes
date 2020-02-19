@@ -3,6 +3,7 @@ import FamilyContext from '../../FamilyContext'
 import AuthApiService from '../../services/auth-api-service'
 import ValidationError from '../../ValidationError'
 import { Roller } from 'react-awesome-spinners'
+import TokenService from '../../services/token-service'
 
 
 export default class AddRecipe extends Component {
@@ -41,7 +42,9 @@ export default class AddRecipe extends Component {
                 touched: false
             },
             loading: false,
-            error: null
+            error: null,
+            admin: false,
+            id: ''
         }
     }
     updateDishName(dishName) {
@@ -159,8 +162,20 @@ export default class AddRecipe extends Component {
             this.setState({ error: res.error })
         })
     }
+    setRole(role) {
+        if (Number(role) === 3)
+        this.setState({ admin: true })
+    }
+    setId(id) {
+        this.setState({ id: Number(id) })
+    }
+    componentDidMount() {
+        this.setId(TokenService.getUserId())
+        this.setRole(TokenService.getUserRole())
+    }
     static contextType = FamilyContext
     render() {
+        const currentUser = this.context.users.filter(user => user.id === this.state.id)
         return (
             <div className="add-recipe-form">
                 <form onSubmit={this.handleSubmit}>
@@ -176,6 +191,7 @@ export default class AddRecipe extends Component {
                     </div>
                     <div id="recipe-creator" className="form-row">
                         <label htmlFor="recipe-creator">Recipe Creator</label>
+                        {this.state.admin && 
                         <select
                             type="text"
                             id="recipeCreator"
@@ -191,7 +207,24 @@ export default class AddRecipe extends Component {
                                 <option key={user.id} value={user.id}>{user.fname + " " + user.lname}</option>    
                             )}
                         </select>
-
+                        }
+                        {!this.state.admin &&
+                        <select
+                            type="text"
+                            id="recipeCreator"
+                            name="recipeCreator"
+                            defaultValue="default"
+                            aria-required="true"
+                            aria-label="Recipe Creator"
+                            required
+                            onChange={e => this.updateRecipeCreator(e.target.value)}
+                        >
+                            <option key="default" value="default" disabled>Select the recipe creator</option>
+                            {currentUser.map(user =>
+                                <option key={user.id} value={user.id}>{user.fname + " " + user.lname}</option>    
+                            )}
+                        </select>
+                        }
                     </div>
                     <div id="recipe-description" className="form-row">
                         <label htmlFor="description">Recipe Description</label>

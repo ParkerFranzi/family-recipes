@@ -35,7 +35,7 @@ class UserLanding extends Component {
                             <NavLink to={`/recipes/${recipe.id}`}>
                                 <h2>{recipe.dishname}</h2>
                             </NavLink>
-                            <img  src={`${recipe.image}`} />
+                            <img alt={recipe.dishname + "-pic"} src={`${config.CLOUDINARY_URL}/w_500,q_auto/${recipe.public_id}.${recipe.pic_type}`} />
                             <p>{recipe.description}</p>
                         </li>
 

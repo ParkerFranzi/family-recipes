@@ -40,6 +40,9 @@ export default class EditRecipe extends Component {
             },
             loading: false,
             deleteCheck: false,
+            admin: false,
+            id: '',
+            error: null
 
         }
     }
@@ -62,6 +65,9 @@ export default class EditRecipe extends Component {
     setPublicId(public_id) {
         this.setState({ public_id: { value: public_id }})
         console.log(public_id)
+    }
+    setCurrentPic(public_id, pic_type) {
+        this.setState({ currentPic: { value: public_id + "." + pic_type}})
     }
     setIngredients(ingredient) {
         this.setState({ 
@@ -144,9 +150,7 @@ export default class EditRecipe extends Component {
             recipe.instructions = instructionList
             this.setState({ loading: false })
             this.context.updateRecipe(recipe)
-            console.log("help")
             this.props.history.push(`/recipes/${recipe.id}`)
-            console.log("test")
         })
         .catch(res => {
             this.setState({ loading: false })
@@ -205,8 +209,17 @@ export default class EditRecipe extends Component {
             this.setState({ error: res.error })
         })
     }
+    setRole(role) {
+        if (Number(role) === 3)
+        this.setState({ admin: true })
+    }
+    setId(id) {
+        this.setState({ id: Number(id) })
+    }
     componentDidMount() {
         this.setState({loading: true})
+        this.setId(TokenService.getUserId())
+        this.setRole(TokenService.getUserRole())
         fetch(`${config.API_ENDPOINT}/recipes/edit-recipe/${this.props.match.params.recipeId}`, {
             headers: {
               'authorization': `bearer ${TokenService.getAuthToken()}`,
@@ -226,7 +239,7 @@ export default class EditRecipe extends Component {
             this.setIngredients(recipe[0].ingredients)
             this.setInstructions(recipe[0].instructions)
             this.updateRecipeCreator(recipe[0].userid)
-            console.log(recipe[0])
+            this.setCurrentPic(recipe[0].public_id, recipe[0].pic_type)
             this.setPublicId(recipe[0].public_id)
             this.setState({ loading: false })
         })
@@ -237,175 +250,188 @@ export default class EditRecipe extends Component {
     }
     static contextType = FamilyContext
     render() {
-        if (!this.context.recipes.length) {
-            return <ul></ul>
+        if (this.state.error) {
+            return <p>{this.state.error}</p>
         }
-        const role = TokenService.getUserRole()
-        const id = TokenService.getUserId()
-        console.log(this.state, role, id)
-        const matchingRecipe = Number(this.props.match.params.recipeId)
-        const recipeFilter = this.context.recipes.filter(recipe => recipe.id === matchingRecipe)
-        if (recipeFilter[0] === undefined) {
-            return <div className="edit-recipe-form">
-                <p>Recipe not found</p>
-            </div>
-        }
+        const currentUser = this.context.users.filter(user => user.id === this.state.id)
+
         return (
-            <div className="edit-recipe-form">
-                <form onSubmit={this.handleSubmit}>
-                    <div id="dish-name" className="form-row">
-                        <label htmlFor="dish-name">Dish Name</label>
-                        <input
-                            name="dish-name"
-                            type="text"
-                            required
-                            value={this.state.dishName.value}
-                            id="dish-name"
-                            onChange={e => this.updateDishName(e.target.value)}
-                        />
-                    </div>
-                    {role === 3 && 
-                    <div id="recipe-creator" className="form-row">
-                        <label htmlFor="recipe-creator">Recipe Creator</label>
-                        <select
-                            type="text"
-                            value={this.state.recipeCreator.value}
-                            required
-                            aria-label="Recipe Creator"
-                            onChange={e => this.updateRecipeCreator(e.target.value)}
-                        >
-                            <option key="default" value="default" disabled>Select the recipe creator</option>
-                            {this.context.users.map(user =>
-                                <option key={user.id} value={user.id}>{user.fname + " " + user.lname}</option>    
-                            )}
-                        </select>
-
-                    </div>}
-
-                    <div id="recipe-description" className="form-row">
-                        <label htmlFor="description">Recipe Description</label>
-                        <textarea
-                            type="text"
-                            value={this.state.description.value}
-                            required
-                            aria-label="Recipe Description"
-                            onChange={e => this.updateDescription(e.target.value)}
-                        />
-                    </div>
-                    <div id="recipie-time" className="form-row">
-                        <label htmlFor="prep-time">Prep Time</label>
-                        <input
-                            type="text"
-                            value={this.state.prepTime.value}
-                            required
-                            arai-label="Prep Time"
-                            onChange={e => this.updatePrepTime(e.target.value)}
-                        />
-                        <label htmlFor="cook-time">Cook Time</label>
-                        <input
-                            type="text"
-                            value={this.state.cookTime.value}
-                            required
-                            arai-label="Cook Time"
-                            onChange={e => this.updateCookTime(e.target.value)}
-                        />
-                    </div>
-                    <div id="ingredients-list" className="form-row">
-                        <label htmlFor="ingredients">Ingredients</label>
-                        {this.state.ingredients.map((ingredient, index) => (
-                            
-                            <div className="ingredients" key={ingredient + index}>
-                                <input
-                                    type="text"
-                                    placeholder={`ingredient #${index + 1} name`}
-                                    value={ingredient.ingredient}
-                                    required
-                                    onChange={this.handleIngredientNameChange(index)}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={this.handleRemoveIngredient(index)}
-                                    className="small-button"
-                                >
-                                    -
-                                </button>
-                            </div>
-                        ))}
-                   
-                        <button
-                            type="button"
-                            onClick={this.handleAddIngredient}
-                            className="small-button"
-                        >
-                            Add Ingredient
-                        </button>
-                    </div>
-                    <div id="instructions-list" className="form-row">
-                        <label htmlFor="instructions">Directions</label>
-                        {this.state.instructions.map((instruction, index) => (
-                            <div className="instructions" key={instruction + index}>
-                                <input
-                                    type="text"
-                                    placeholder={`instruction #${index + 1} name`}
-                                    value={instruction.instruction}
-                                    required
-                                    onChange={this.handleinstructionNameChange(index)}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={this.handleRemoveinstruction(index)}
-                                    className="small-button"
-                                >
-                                    -
-                                </button>
-                            </div>
-                        ))}
-                
-                        <button
-                            type="button"
-                            onClick={this.handleAddinstruction}
-                            className="small-button"
-                        >
-                            Add instruction
-                        </button>
-                    </div>
-                    <div id="dish-picture" className="form-row">
-                        <label htmlFor="dish-picture">Recipe Picture</label>
-                        <input
-                            type="file"
-                            id="dish-picture"
-                            name="dish-picture"
-                            accept=".jpg, .jpeg, .png"
-                            onChange={e => this.updateDishPic(e.target.value, e.target.files)}
-                        />
-                        <div className="current-picture">
-                            Current Picture: <img src={`${recipeFilter[0].image}`} />
+            <div id="edit-recipe">
+                <h2 className="page-header">Edit Recipe</h2>
+                <div className="edit-recipe-form">
+                    <form onSubmit={this.handleSubmit}>
+                        <div id="dish-name" className="form-row">
+                            <label htmlFor="dish-name">Dish Name</label>
+                            <input
+                                name="dish-name"
+                                type="text"
+                                required
+                                value={this.state.dishName.value}
+                                id="dish-name"
+                                onChange={e => this.updateDishName(e.target.value)}
+                            />
                         </div>
-                    </div>
-                    <button
-                        type="submit"
-                    >
-                        Edit Recipe
-                    </button>
-                    {this.state.loading && <Roller />}
-                    {this.state.error && <ValidationError message={this.state.error} />}
-                </form>
-                <div id="delete-recipe">
-                    {!this.state.deleteCheck && <button onClick={this.handleDeleteCheck}>Delete Recipe</button>}
-                    {this.state.deleteCheck && 
-                        <div className="delete">
-                            Are you sure you want to delete recipe?
-                            <button 
-                                type="button"
-                                className="deleteButton"
-                                onClick={this.handleDeleteRecipe}
+
+                        <div id="recipe-creator" className="form-row">
+                            <label htmlFor="recipe-creator">Recipe Creator</label>
+                            {this.state.admin && 
+                            <select
+                                type="text"
+                                value={this.state.recipeCreator.value}
+                                required
+                                aria-label="Recipe Creator"
+                                onChange={e => this.updateRecipeCreator(e.target.value)}
                             >
-                                Delete
+                                <option key="default" value="default" disabled>Select the recipe creator</option>
+                                {this.context.users.map(user =>
+                                    <option key={user.id} value={user.id}>{user.fname + " " + user.lname}</option>    
+                                )}
+                            </select> 
+                            }
+                            {!this.state.admin && 
+                            <select
+                                type="text"
+                                value={this.state.recipeCreator.value}
+                                required
+                                aria-label="Recipe Creator"
+                                onChange={e => this.updateRecipeCreator(e.target.value)}
+                            >
+                                {currentUser.map(user =>
+                                    <option key={user.id} value={user.id}>{user.fname + " " + user.lname}</option>    
+                                )}
+                            </select> 
+                            }
+
+                        </div>
+                    
+
+                        <div id="recipe-description" className="form-row">
+                            <label htmlFor="description">Recipe Description</label>
+                            <textarea
+                                type="text"
+                                value={this.state.description.value}
+                                required
+                                aria-label="Recipe Description"
+                                onChange={e => this.updateDescription(e.target.value)}
+                            />
+                        </div>
+                        <div id="recipie-time" className="form-row">
+                            <label htmlFor="prep-time">Prep Time</label>
+                            <input
+                                type="text"
+                                value={this.state.prepTime.value}
+                                required
+                                arai-label="Prep Time"
+                                onChange={e => this.updatePrepTime(e.target.value)}
+                            />
+                            <label htmlFor="cook-time">Cook Time</label>
+                            <input
+                                type="text"
+                                value={this.state.cookTime.value}
+                                required
+                                arai-label="Cook Time"
+                                onChange={e => this.updateCookTime(e.target.value)}
+                            />
+                        </div>
+                        <div id="ingredients-list" className="form-row">
+                            <label htmlFor="ingredients">Ingredients</label>
+                            {this.state.ingredients.map((ingredient, index) => (
+                                
+                                <div className="ingredients" key={ingredient + index}>
+                                    <input
+                                        type="text"
+                                        placeholder={`ingredient #${index + 1} name`}
+                                        value={ingredient.ingredient}
+                                        required
+                                        onChange={this.handleIngredientNameChange(index)}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={this.handleRemoveIngredient(index)}
+                                        className="small-button"
+                                    >
+                                        -
+                                    </button>
+                                </div>
+                            ))}
+                    
+                            <button
+                                type="button"
+                                onClick={this.handleAddIngredient}
+                                className="small-button"
+                            >
+                                Add Ingredient
                             </button>
                         </div>
-                    }
-                </div>
+                        <div id="instructions-list" className="form-row">
+                            <label htmlFor="instructions">Directions</label>
+                            {this.state.instructions.map((instruction, index) => (
+                                <div className="instructions" key={instruction + index}>
+                                    <input
+                                        type="text"
+                                        placeholder={`instruction #${index + 1} name`}
+                                        value={instruction.instruction}
+                                        required
+                                        onChange={this.handleinstructionNameChange(index)}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={this.handleRemoveinstruction(index)}
+                                        className="small-button"
+                                    >
+                                        -
+                                    </button>
+                                </div>
+                            ))}
+                    
+                            <button
+                                type="button"
+                                onClick={this.handleAddinstruction}
+                                className="small-button"
+                            >
+                                Add instruction
+                            </button>
+                        </div>
+                        <div id="dish-picture" className="form-row">
+                            <label htmlFor="dish-picture">Recipe Picture</label>
+                            <input
+                                type="file"
+                                id="dish-picture"
+                                name="dish-picture"
+                                accept=".jpg, .jpeg, .png"
+                                onChange={e => this.updateDishPic(e.target.value, e.target.files)}
+                            />
+                            {this.state.currentPic &&
+                                <div className="current-picture">
+                                    Current Picture: <img alt={this.state.dishName.value + "-current-pic"} src={`${config.CLOUDINARY_URL}/w_500,q_auto/${this.state.currentPic.value}`} />
+                                </div>
+                            }
+                        </div>
+                        <button
+                            type="submit"
+                        >
+                            Edit Recipe
+                        </button>
+                        {this.state.loading && <Roller />}
+                        {this.state.error && <ValidationError message={this.state.error} />}
+                    </form>
+                    <div id="delete-recipe">
+                        {!this.state.deleteCheck && <button onClick={this.handleDeleteCheck}>Delete Recipe</button>}
+                        {this.state.deleteCheck && 
+                            <div className="delete">
+                                Are you sure you want to delete recipe?
+                                <button 
+                                    type="button"
+                                    className="deleteButton"
+                                    onClick={this.handleDeleteRecipe}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        }
+                    </div>
 
+                </div>
             </div>
         )
     }

@@ -35,7 +35,7 @@ export default class Recipe extends Component {
         return (
             <section className="recipe">
                 <h1>{recipeFilter[0].dishname}</h1>
-                <img src={`${recipeFilter[0].image}`} />
+                <img alt={recipeFilter[0].dishname + "-pic"} src={`${config.CLOUDINARY_URL}/w_1000,q_auto/${recipeFilter[0].public_id}.${recipeFilter[0].pic_type}`} />
                 <p className="description">{recipeFilter[0].description}</p>
                 <p className="prep-time">Prep Time: {recipeFilter[0].preptime}</p>
                 <p className="cook-time">Cook Time: {recipeFilter[0].cooktime}</p>
