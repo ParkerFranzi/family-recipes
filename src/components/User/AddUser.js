@@ -48,6 +48,7 @@ export default class AddUser extends Component {
     }
     updatepicture(name, picture) {
         this.setState({picture: {value: name, touched: true, file: picture[0] }})
+        console.log(this.state.picture)
     }
 
     validateFirstName() {
@@ -82,7 +83,7 @@ export default class AddUser extends Component {
         formData.append('email', email.value)
         formData.append('password', password.value)
         formData.append(`picture`, this.state.picture.file)
-
+        console.log(this.state.picture.file)
         AuthApiService.postUser(formData)
         .then(user => {
             fName.value = ''
@@ -104,6 +105,7 @@ export default class AddUser extends Component {
         const passwordError = this.validatePassword()
         const fNameError = this.validateFirstName()
         const lNameError = this.validateLastName()
+        console.log(this.state.picture)
         return(
             <section className="addUser">
                 <h2>User Registration</h2>
