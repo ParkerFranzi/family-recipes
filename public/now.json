@@ -1,6 +1,5 @@
 {
     "version": 2,
-    "alias": "family-recipes-app",
     "name": "family-recipes",
     "routes": [
         { "handle": "filesystem" },

@@ -14,6 +14,7 @@ import EditRecipe from './components/Recipe/EditRecipe'
 import EditUser from './components/User/EditUser'
 import config from './config'
 import TokenService from './services/token-service'
+import NotFoundPage from './components/NotFoundPage/NotFoundPage'
 
 
 class App extends Component {
@@ -52,24 +53,23 @@ class App extends Component {
     })
   }
   addRecipe = (recipe) => {
-    console.log(recipe)
     this.setState({
       recipes: [
         ...this.state.recipes,
         recipe
       ]
     })
+    this.clearError()
   }
   updateRecipe = (recipe) => {
     const recipeFiltered = this.state.recipes.filter(recipes => recipes.id !== recipe.id)
-    console.log(recipeFiltered)
     this.setState({
       recipes: [
         ...recipeFiltered,
         recipe
       ]
     })
-    console.log(this.state)
+    this.clearError()
   }
   deleteRecipe = (recipeId) => {
     const recipeFiltered = this.state.recipes.filter(recipes => recipes.id !== recipeId)
@@ -78,6 +78,7 @@ class App extends Component {
         ...recipeFiltered
       ]
     })
+    this.clearError()
   }
   addUser = (user) => {
     this.setState({
@@ -86,6 +87,7 @@ class App extends Component {
         user
       ]
     })
+    this.clearError()
   }
   updateUser = (user) => {
     const userFilterd = this.state.users.filter(users => users.id !== user.id)
@@ -95,6 +97,7 @@ class App extends Component {
         user
       ]
     })
+    this.clearError()
   }
   loggedIn = () => {
     this.setState({isUserLoggedIn: true})
@@ -183,6 +186,9 @@ class App extends Component {
             <PublicOnlyRoute
               exact path='/login'
               component={LoginPage}
+            />
+            <Route
+              component={NotFoundPage}
             />
           </Switch>
         </main>

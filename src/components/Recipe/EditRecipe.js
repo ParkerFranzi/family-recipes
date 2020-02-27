@@ -64,7 +64,6 @@ export default class EditRecipe extends Component {
     }
     setPublicId(public_id) {
         this.setState({ public_id: { value: public_id }})
-        console.log(public_id)
     }
     setCurrentPic(public_id, pic_type) {
         this.setState({ currentPic: { value: public_id + "." + pic_type}})
@@ -77,7 +76,6 @@ export default class EditRecipe extends Component {
             this.setState({
                 ingredients: this.state.ingredients.concat([{ ingredient: ingredient.ingredientList[i] }])
             })
-            console.log(this.state)
         }
     }
     setInstructions(instruction) {
@@ -88,7 +86,6 @@ export default class EditRecipe extends Component {
             this.setState({
                 instructions: this.state.instructions.concat([{ instruction: instruction.instructionList[i] }])
             })
-            console.log(this.state)
         }
         
     }
@@ -118,7 +115,6 @@ export default class EditRecipe extends Component {
         event.preventDefault()
         this.setState({ loading: true })
         const { dishName, description, ingredients, instructions, dishPic, prepTime, cookTime, public_id, recipeCreator } = this.state
-        console.log(public_id)
         const ingredientList = this.formIngredientList(ingredients)
         const instructionList = this.formInstructionList(instructions)
         const recipeId = this.props.match.params.recipeId

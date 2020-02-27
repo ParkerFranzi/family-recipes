@@ -15,6 +15,12 @@ class UserLanding extends Component {
         const matchingUserId = Number(this.props.match.params.userId)
         const recipeFilter = this.context.recipes.filter(recipe => recipe.userid === matchingUserId)
         const userFilter = this.context.users.filter(user => user.id === matchingUserId)
+        if (userFilter[0] === undefined) 
+            return (
+                <section className="user-landing">
+                    <p>User doesn't exist</p>
+                </section>
+            )
         if (recipeFilter[0] === undefined) 
             return (
                 <section className="user-landing">
