@@ -16,6 +16,7 @@ import config from './config'
 import TokenService from './services/token-service'
 import NotFoundPage from './components/NotFoundPage/NotFoundPage'
 import './App.css'
+import { Roller } from 'react-awesome-spinners'
 
 
 class App extends Component {
@@ -26,6 +27,7 @@ class App extends Component {
         recipes: [],
         isUserLoggedIn: false,
         hasError: false,
+        loading: true,
         error: null
       }
   }
@@ -113,9 +115,11 @@ class App extends Component {
   }
   componentDidMount() {
     //API Fetch when I need to add it
+    this.setState({ loading: true })
+    console.log(this.state)
     Promise.all([
-      fetch(`${config.API_ENDPOINT}/users`),
-      fetch(`${config.API_ENDPOINT}/recipes`)
+      fetch(`${config.API_ENDPOINT_LOCAL}/users`),
+      fetch(`${config.API_ENDPOINT_LOCAL}/recipes`)
     ])
 
     .then(([usersRes, recipesRes]) => {
@@ -126,12 +130,14 @@ class App extends Component {
         return Promise.all([usersRes.json(), recipesRes.json()])
     })
     .then(([users, recipes]) => {
+        this.setState({ loading: false })
         this.setState({users, recipes})
     })
     .catch(error => {console.log({ error })
     })
     
     this.checkLogin()
+
   }
   
   render() {
@@ -150,11 +156,23 @@ class App extends Component {
       setError: this.setError,
       clearError: this.clearError
     }
+    if (this.state.loading) {
+      return (
+        <FamilyContext.Provider value={value}>
+          <main className='App'>
+            <Header />
+            <div className="loading">{this.state.loading && <Roller />}</div>
+            </main>
+        </FamilyContext.Provider>
+      )
+    }
     return (
+
       <FamilyContext.Provider value={value}>
         <Header />
         <main className='App'>
           {this.state.hasError && <p className='red'>There was an error! Oh no!</p>}
+          
           <Switch>
             <PublicOnlyRoute
               exact path='/register'
