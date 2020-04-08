@@ -4,6 +4,7 @@ import AuthApiService from '../../services/auth-api-service'
 import ValidationError from '../../ValidationError'
 import { Roller } from 'react-awesome-spinners'
 import TokenService from '../../services/token-service'
+import './AddRecipe.css'
 
 
 export default class AddRecipe extends Component {
@@ -177,10 +178,11 @@ export default class AddRecipe extends Component {
     render() {
         const currentUser = this.context.users.filter(user => user.id === this.state.id)
         return (
-            <div className="add-recipe-form">
+            <section className="add-recipe-form">
+                <h1>Add Recipe</h1>
                 <form onSubmit={this.handleSubmit}>
                     <div id="dish-name" className="form-row">
-                        <label htmlFor="dish-name">Dish Name</label>
+                        <label htmlFor="dish-name">Dish Name <span className="require-input">*</span></label>
                         <input
                             name="dishName"
                             type="text"
@@ -190,7 +192,7 @@ export default class AddRecipe extends Component {
                         />
                     </div>
                     <div id="recipe-creator" className="form-row">
-                        <label htmlFor="recipe-creator">Recipe Creator</label>
+                        <label htmlFor="recipe-creator">Recipe Creator <span className="require-input">*</span></label>
                         {this.state.admin && 
                         <select
                             type="text"
@@ -227,7 +229,7 @@ export default class AddRecipe extends Component {
                         }
                     </div>
                     <div id="recipe-description" className="form-row">
-                        <label htmlFor="description">Recipe Description</label>
+                        <label htmlFor="description">Recipe Description <span className="require-input">*</span></label>
                         <textarea
                             type="text"
                             id="description"
@@ -238,8 +240,8 @@ export default class AddRecipe extends Component {
                             onChange={e => this.updateDescription(e.target.value)}
                         />
                     </div>
-                    <div id="recipie-time" className="form-row">
-                        <label htmlFor="prep-time">Prep Time</label>
+                    <div id="prep-time" className="form-row">
+                        <label htmlFor="prep-time">Prep Time <span className="require-input">*</span></label>
                         <input
                             type="text"
                             name="prepTime"
@@ -249,7 +251,9 @@ export default class AddRecipe extends Component {
                             aria-label="Prep Time"
                             onChange={e => this.updatePrepTime(e.target.value)}
                         />
-                        <label htmlFor="cook-time">Cook Time</label>
+                    </div>
+                    <div id="cook-time" className="form-row">
+                        <label htmlFor="cook-time">Cook Time <span className="require-input">*</span></label>
                         <input
                             type="text"
                             name="cookTime"
@@ -261,13 +265,13 @@ export default class AddRecipe extends Component {
                         />
                     </div>
                     <div id="ingredients-list" className="form-row">
-                        <label htmlFor="ingredients">Ingredients</label>
+                        <label htmlFor="ingredients">Ingredients <span className="require-input">*</span></label>
                         {this.state.ingredients.map((ingredient, index) => (
                             
                             <div className="ingredients" key={index}>
                                 <input
                                     type="text"
-                                    placeholder={`Ingredient #${index + 1} name`}
+                                    placeholder={`Ingredient #${index + 1}`}
                                     value={ingredient.name}
                                     onChange={this.handleIngredientNameChange(index)}
                                     required
@@ -291,13 +295,13 @@ export default class AddRecipe extends Component {
                         </button>
                     </div>
                     <div id="instructions-list" className="form-row">
-                        <label htmlFor="instructions">Directions</label>
+                        <label htmlFor="instructions">Directions <span className="require-input">*</span></label>
                         {this.state.instructions.map((instruction, index) => (
                             
                             <div className="instructions" key={index}>
                                 <input
                                     type="text"
-                                    placeholder={`instruction #${index + 1} name`}
+                                    placeholder={`instruction #${index + 1}`}
                                     value={instruction.name}
                                     onChange={this.handleinstructionNameChange(index)}
                                     required
@@ -321,7 +325,7 @@ export default class AddRecipe extends Component {
                         </button>
                     </div>
                     <div id="dish-picture" className="form-row">
-                        <label htmlFor="dish-picture">Recipe Picture</label>
+                        <label htmlFor="dish-picture">Recipe Picture <span className="require-input">*</span></label>
                         <input
                             type="file"
                             id="dish-picture"
@@ -339,7 +343,7 @@ export default class AddRecipe extends Component {
                     {this.state.loading && <Roller />}
                     {this.state.error && <ValidationError message={this.state.error} />}
                 </form>
-            </div>
+            </section>
         )
     }
 }

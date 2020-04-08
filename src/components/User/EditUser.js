@@ -7,9 +7,6 @@ import TokenService from '../../services/token-service'
 import { Roller } from 'react-awesome-spinners'
 
 export default class AddUser extends Component {
-    static defaultProps = {
-        onRegistrationSuccess: () => {}
-    }
     constructor(props) {
         super(props)
         this.state = {
@@ -25,10 +22,12 @@ export default class AddUser extends Component {
             },
             password: {
                 value: '',
-
             },
             newPassword: {
                 value: '',
+            },
+            newPasswordTouch: {
+                touched: false,
             },
             confirmPassword: {
                 value: '',
@@ -71,7 +70,6 @@ export default class AddUser extends Component {
     }
     setPublicId(public_id) {
         this.setState({ public_id: { value: public_id }})
-        console.log(public_id)
     }
     validateFirstName() {
         const fName = this.state.fName.value.trim()
@@ -79,10 +77,29 @@ export default class AddUser extends Component {
             return "Please enter in a first name"
         }
     }
+    passwordBlur() {
+        this.setState({newPasswordTouch: { touched: true }})
+    }
+
     validatePassword() {
-        const password = this.state.password.value.trim()
-        if (password.length < 5) {
-            return "Please enter a password longer than 5 characters"
+        const password = this.state.newPassword.value.trim()
+        if (password.length < 8) {
+            return "Please enter a password at least 8 characters"
+        }
+        if (password.length > 71) {
+            return "Password must be less than 72 characters"
+        }
+        if (!(password.match(/(?=.*[a-z])/))) {
+            return "Password must contain a lowercase letter"
+        }
+        if (!(password.match(/(?=.*[A-Z])/))) {
+            return "Password must contain a capital letter"
+        }
+        if (!(password.match(/(?=.*\d)/))) {
+            return "Password must contain a number"
+        }
+        if(!(/[\s~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?()._]/g.test(password))) {
+            return "Password must contain a special character"
         }
     }
     validateLastName() {
@@ -166,11 +183,11 @@ export default class AddUser extends Component {
         const lNameError = this.validateLastName()
         return(
             <section className="addUser">
-                <h2>User Registration</h2>
+                <h1>Edit User</h1>
                 <form onSubmit={e => this.handleSubmit(e)} encType="multipart/form-data">
                     {this.state.fName.touched && (<ValidationError message={fNameError} />)}
                     <div className="form-row">
-                        <label htmlFor="fName">First Name *</label>
+                        <label htmlFor="fName">First Name <span className="require-input">*</span></label>
                         <input 
                             type="text" 
                             className="fName"
@@ -184,7 +201,7 @@ export default class AddUser extends Component {
                     </div>
                     {this.state.lName.touched && (<ValidationError message={lNameError} />)}
                     <div className="form-row">
-                        <label htmlFor="lName">Last Name *</label>
+                        <label htmlFor="lName">Last Name <span className="require-input">*</span></label>
                         <input 
                             type="text" 
                             className="lName"
@@ -197,8 +214,8 @@ export default class AddUser extends Component {
                         />
                     </div>
                     <div className="form-row">
-                        <label htmlFor="email">Email *</label>
-                        {this.state.email.value}
+                        <label htmlFor="email">Email <span className="require-input">*</span></label>
+                        <p>{this.state.email.value}</p>
                         {/* <input 
                             type="email"
                             className="email"
@@ -209,9 +226,8 @@ export default class AddUser extends Component {
                             onChange={e => this.updateEmail(e.target.value)}
                         /> */}
                     </div>
-                    {this.state.password.touched && (<ValidationError message={passwordError} />)}
                     <div className="form-row">
-                        <label htmlFor="password">Current Password</label>
+                        <label htmlFor="password">Current Password <span className="require-input">*</span></label>
                         <input
                             type="password" 
                             className="password" 
@@ -229,8 +245,10 @@ export default class AddUser extends Component {
                             name="new-password" 
                             id="new-password"
                             aria-label="new-password"
+                            onBlur={() => this.passwordBlur()}
                             onChange={e => this.updateNewPassword(e.target.value)}
                         />
+                        {this.state.newPasswordTouch.touched && (<ValidationError message={passwordError} />)}
                     </div>
                     <div className="form-row">
                         <label htmlFor="confirm-password">Confirm Password</label>

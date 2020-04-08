@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import FamilyContext from '../../FamilyContext'
 import './Recipe.css'
 import { Link } from 'react-router-dom'
-import EditRecipe from './EditRecipe'
 import config from '../../config'
+import TokenService from '../../services/token-service'
 
 export default class Recipe extends Component {
     state = {
-        edit: false
+        edit: false,
+        id: '',
+        admin: ''
     }
 
     handleEdit = () => {
@@ -15,52 +17,67 @@ export default class Recipe extends Component {
             edit: true
         })
     }
+    setRole(role) {
+        if (Number(role) === 3)
+        this.setState({ admin: true })
+    }
+    setId(id) {
+        this.setState({ id: Number(id) })
+    }
+    componentDidMount() {
+        this.setId(TokenService.getUserId())
+        this.setRole(TokenService.getUserRole())
+    }
     static contextType = FamilyContext
     render() {
         if (!this.context.recipes.length) {
             return <ul></ul>
         }
         console.log(this.context)
+        console.log(this.state)
         const matchingRecipe = Number(this.props.match.params.recipeId)
         const recipeFilter = this.context.recipes.filter(recipe => recipe.id === matchingRecipe)
+        const {dishname, public_id, pic_type, description, preptime, cooktime, ingredients, instructions, userid} = recipeFilter[0]
         if (recipeFilter[0] === undefined) {
             return <div className="edit-recipe-form">
                 <p>Recipe not found</p>
             </div>
         }
-        const ingredientArray = recipeFilter[0].ingredients.ingredientList
-        const instructionArray = recipeFilter[0].instructions.instructionList
+        const ingredientArray = ingredients.ingredientList
+        const instructionArray = instructions.instructionList
 
         
         return (
             <section className="recipe">
-                <h1>{recipeFilter[0].dishname}</h1>
-                <img alt={recipeFilter[0].dishname + "-pic"} src={`${config.CLOUDINARY_URL}/w_1000,q_auto/${recipeFilter[0].public_id}.${recipeFilter[0].pic_type}`} />
-                <p className="description">{recipeFilter[0].description}</p>
-                <p className="prep-time">Prep Time: {recipeFilter[0].preptime}</p>
-                <p className="cook-time">Cook Time: {recipeFilter[0].cooktime}</p>
-                <p>Ingredients</p>
+                <h1>{dishname}</h1>
+                <div className="recipe-img-container">
+                    <img alt={dishname + "-pic"} src={`${config.CLOUDINARY_URL}/w_950,q_auto/${public_id}.${pic_type}`} />
+                </div>
+                
+                {(this.state.admin === true || this.state.id === userid) && <Link className="edit-recipe" to={`/edit-recipe/${matchingRecipe}`}>Edit Recipe</Link>}
+                <h3>Description</h3>
+                <p className="description-text">{description}</p>
+                <p className="prep-time"><b>Prep Time:</b> {preptime}</p>
+                <p className="cook-time"><b>Cook Time:</b> {cooktime}</p>
+                <h3>Ingredients</h3>
                 <ul className="ingredients">
                     {ingredientArray.map((ingredient, index) =>
                         <li key={index + ingredient}>
-                            {console.log(ingredient, index)}
-                            <p>{(index + 1) + ": " + ingredient}</p> 
+                            <p>{ingredient}</p> 
                         </li>   
                     )}
                 </ul>
-                <p>Instructions</p>
+                <h3>Instructions</h3>
                 <ul className="instructions">
                     {instructionArray.map((instruction, index) =>
                         <li key={index + instruction}>
-                            <p>{(index + 1) + ": " + instruction}</p> 
+                            <p>{(index + 1) + ". " + instruction}</p> 
                         </li>   
                     )}
                 </ul>
-                {this.state.edit && <Link to={`/edit-recipe/${matchingRecipe}`}>Edit Recipe</Link>}
-                {!this.state.edit && <button onClick={this.handleEdit}>Edit Recipe</button>}
-                
-                
-                
+                <Link to={`/users/${userid}`}>
+                    <p>Back to recipes</p>
+                </Link>  
             </section>
         )
     }

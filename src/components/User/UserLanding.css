@@ -1,15 +1,39 @@
 .recipe-list li {
-    width: 100%;
+    width: 33.3%;
+    padding: 15px;
     display: inline-block;
     vertical-align: top;
     text-align: center;
     
 }
-
-@media screen and (min-width: 1023px) {
+.recipe-list h2 {
+    margin: 10px 0;
+}
+.recipe-list p {
+    margin: 10px 0;
+}
+.user-landing-heading {
+    text-align: center;
+}
+.user-img {
+    text-align: center;
+}
+.imageHolder {
+    max-height: 200px;
+    overflow: hidden;
+    height: 200px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+@media screen and (max-width: 1023px) {
     .recipe-list li {
-        width: 33.3%;
-        padding: 15px;
+        width: 50%;
     }
     
+}
+@media screen and (max-width: 676px) {
+    .recipe-list li {
+        width: 100%
+    }
 }

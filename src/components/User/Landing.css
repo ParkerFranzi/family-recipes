@@ -5,16 +5,22 @@
     border: 2px solid green;
 }
 .user-box {
-    width: 100%;
+    width: 33.3%;
     display: inline-block;
     vertical-align: top;
     text-align: center;
+    padding: 15px;
 }
 
-@media screen and (min-width: 1023px) {
+@media screen and (max-width: 1023px) {
     .user-box {
-        width: 33.3%;
-        padding: 15px;
+        width: 50%;
+
     }
     
+}
+@media screen and (max-width: 676px) {
+    .user-box {
+        width: 100%;
+    }
 }

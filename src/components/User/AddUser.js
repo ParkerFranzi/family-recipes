@@ -21,8 +21,10 @@ export default class AddUser extends Component {
                 touched: false
             },
             password: {
-                value: '',
-                touched: false
+                value: ''
+            },
+            passwordTouch: {
+                touched: false,
             },
             picture: {
                 value: '',
@@ -44,12 +46,14 @@ export default class AddUser extends Component {
         this.setState({email: {value: email, touched: true }})
     }
     updatePassword(password) {
-        this.setState({password: {value: password, touched: true }})
+        this.setState({password: {value: password }})
     }
     updatepicture(name, picture) {
         this.setState({picture: {value: name, touched: true, file: picture[0] }})
     }
-
+    passwordBlur() {
+        this.setState({passwordTouch: { touched: true }})
+    }
     validateFirstName() {
         const fName = this.state.fName.value.trim()
         if (fName.length === 0) {
@@ -59,7 +63,22 @@ export default class AddUser extends Component {
     validatePassword() {
         const password = this.state.password.value.trim()
         if (password.length < 8) {
-            return "Please enter a password longer at least 8 characters"
+            return "Please enter a password at least 8 characters"
+        }
+        if (password.length > 71) {
+            return "Password must be less than 72 characters"
+        }
+        if (!(password.match(/(?=.*[a-z])/))) {
+            return "Password must contain a lowercase letter"
+        }
+        if (!(password.match(/(?=.*[A-Z])/))) {
+            return "Password must contain a capital letter"
+        }
+        if (!(password.match(/(?=.*\d)/))) {
+            return "Password must contain a number"
+        }
+        if(!(/[\s~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?()._]/g.test(password))) {
+            return "Password must contain a special character"
         }
     }
     validateLastName() {
@@ -106,11 +125,11 @@ export default class AddUser extends Component {
         const lNameError = this.validateLastName()
         return(
             <section className="addUser">
-                <h2>User Registration</h2>
+                <h1>User Registration</h1>
                 <form onSubmit={e => this.handleSubmit(e)} encType="multipart/form-data">
                     {this.state.fName.touched && (<ValidationError message={fNameError} />)}
                     <div className="form-row">
-                        <label htmlFor="fName">First Name *</label>
+                        <label htmlFor="fName">First Name <span className="require-input">*</span></label>
                         <input 
                             type="text" 
                             className="fName" 
@@ -123,7 +142,7 @@ export default class AddUser extends Component {
                     </div>
                     {this.state.lName.touched && (<ValidationError message={lNameError} />)}
                     <div className="form-row">
-                        <label htmlFor="lName">Last Name *</label>
+                        <label htmlFor="lName">Last Name <span className="require-input">*</span></label>
                         <input 
                             type="text" 
                             className="lName" 
@@ -135,7 +154,7 @@ export default class AddUser extends Component {
                         />
                     </div>
                     <div className="form-row">
-                        <label htmlFor="email">Email *</label>
+                        <label htmlFor="email">Email <span className="require-input">*</span></label>
                         <input 
                             type="email"
                             className="email"
@@ -146,20 +165,22 @@ export default class AddUser extends Component {
                             onChange={e => this.updateEmail(e.target.value)}
                         />
                     </div>
-                    {this.state.password.touched && (<ValidationError message={passwordError} />)}
                     <div className="form-row">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">Password <span className="require-input">*</span></label>
+                        <p className="password-req">Password must contain 1 upper case, lower case, number and special character</p>
                         <input
                             type="password" 
                             className="password" 
                             name="password" 
                             id="password"
                             aria-label="password"
+                            onBlur={() => this.passwordBlur()}
                             onChange={e => this.updatePassword(e.target.value)}
                         />
+                        {this.state.passwordTouch.touched && (<ValidationError message={passwordError} />)}
                     </div>
                     <div className="form-row">
-                        <label htmlFor="picture">Profile Picture</label>
+                        <label htmlFor="picture">Profile Picture <span className="require-input">*</span></label>
                         <input
                             type="file"
                             id="picture"

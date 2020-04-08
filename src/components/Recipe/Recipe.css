@@ -2,3 +2,32 @@
     max-width: 980px;
     margin: auto;
 }
+section h1 {
+    text-align: center;
+}
+.recipe img {
+    display: block;
+    max-height: 550px;
+    margin: auto;
+}
+.recipe-img-container {
+    background-color: #eee;
+}
+.edit-recipe {
+    float: right;
+}
+/* .picture-and-description img {
+    display: inline-block;
+    width: 50%;
+} */
+.recipe ul.ingredients {
+    padding-left: 15px;
+}
+.recipe ul.ingredients li {
+    list-style-type: disc;
+}
+/* .description-text {
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+} */

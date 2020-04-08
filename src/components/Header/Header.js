@@ -19,7 +19,7 @@ export default class Header extends Component {
         <Link
           to={`/edit-user/${TokenService.getUserId()}`}
         >
-          Edit Account
+          Edit User
         </Link>
         <Link
           to='/add-recipe'
@@ -57,13 +57,11 @@ export default class Header extends Component {
             Family Recipes
           </Link>
         </h1>
-        <span className='Header__tagline--wide'>Cook your family favorites</span>
+        <span className='Header__tagline'>Cook your family favorites</span>
         {this.context.isUserLoggedIn
           ? this.renderLogoutLink()
           : this.renderLoginLink()}
       </nav>
-
-      <span className='Header__tagline--narrow'>Cook your family favorites</span>
     </>
   }
 }

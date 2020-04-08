@@ -15,6 +15,7 @@ import EditUser from './components/User/EditUser'
 import config from './config'
 import TokenService from './services/token-service'
 import NotFoundPage from './components/NotFoundPage/NotFoundPage'
+import './App.css'
 
 
 class App extends Component {
@@ -153,7 +154,7 @@ class App extends Component {
       <FamilyContext.Provider value={value}>
         <Header />
         <main className='App'>
-        {this.state.hasError && <p className='red'>There was an error! Oh no!</p>}
+          {this.state.hasError && <p className='red'>There was an error! Oh no!</p>}
           <Switch>
             <PublicOnlyRoute
               exact path='/register'

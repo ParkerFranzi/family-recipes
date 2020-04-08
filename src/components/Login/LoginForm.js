@@ -38,30 +38,36 @@ export default class UserLogin extends Component {
     render() {
         return (
                 <form onSubmit={this.handleSubmitJwtAuth}>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="text"
-                        className="email"
-                        name="email"
-                        id="email"
-                        aria-required="true"
-                        aria-label="Email"
-                    />
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        className="password"
-                        name="password"
-                        id="password"
-                        aria-required="true"
-                        aria-label="Password"
-                    />
-                    <button
-                        type="submit"
-                        className="user-login-button"
-                    >
-                        Login
-                    </button>
+                    <div className="form-row">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="text"
+                            className="email"
+                            name="email"
+                            id="email"
+                            aria-required="true"
+                            aria-label="Email"
+                        />
+                    </div>
+                    <div className="form-row">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            className="password"
+                            name="password"
+                            id="password"
+                            aria-required="true"
+                            aria-label="Password"
+                        />
+                    </div>
+                    <div className="form-row">
+                        <button
+                            type="submit"
+                            className="user-login-button"
+                        >
+                            Login
+                        </button>
+                    </div>
                     {this.state.error && <ValidationError message={this.state.error} />}
                     <NavLink to={`/register`}>
                         <div className="register-link">

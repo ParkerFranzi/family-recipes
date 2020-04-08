@@ -1,0 +1,24 @@
+.intro-text {
+    text-align: center;
+}
+.random-recipe {
+    padding: 0 10px;
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+}
+.random-recipe img {
+    height: 250px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 40px;
+    margin: 45px 0;
+}
+
+@media screen and (max-width: 676px) {
+    .random-recipe {
+        width: 100%
+    }
+}
