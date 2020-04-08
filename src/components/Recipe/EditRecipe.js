@@ -415,7 +415,7 @@ export default class EditRecipe extends Component {
                         {!this.state.deleteCheck && <button onClick={this.handleDeleteCheck}>Delete Recipe</button>}
                         {this.state.deleteCheck && 
                             <div className="delete">
-                                Are you sure you want to delete recipe?
+                                <p>Are you sure you want to delete recipe?</p>
                                 <button 
                                     type="button"
                                     className="deleteButton"

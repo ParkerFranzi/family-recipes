@@ -83,23 +83,25 @@ export default class AddUser extends Component {
 
     validatePassword() {
         const password = this.state.newPassword.value.trim()
-        if (password.length < 8) {
-            return "Please enter a password at least 8 characters"
-        }
-        if (password.length > 71) {
-            return "Password must be less than 72 characters"
-        }
-        if (!(password.match(/(?=.*[a-z])/))) {
-            return "Password must contain a lowercase letter"
-        }
-        if (!(password.match(/(?=.*[A-Z])/))) {
-            return "Password must contain a capital letter"
-        }
-        if (!(password.match(/(?=.*\d)/))) {
-            return "Password must contain a number"
-        }
-        if(!(/[\s~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?()._]/g.test(password))) {
-            return "Password must contain a special character"
+        if (password.length > 0) {
+            if (password.length < 8) {
+                return "Please enter a password at least 8 characters"
+            }
+            if (password.length > 71) {
+                return "Password must be less than 72 characters"
+            }
+            if (!(password.match(/(?=.*[a-z])/))) {
+                return "Password must contain a lowercase letter"
+            }
+            if (!(password.match(/(?=.*[A-Z])/))) {
+                return "Password must contain a capital letter"
+            }
+            if (!(password.match(/(?=.*\d)/))) {
+                return "Password must contain a number"
+            }
+            if(!(/[\s~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?()._]/g.test(password))) {
+                return "Password must contain a special character"
+            }
         }
     }
     validateLastName() {

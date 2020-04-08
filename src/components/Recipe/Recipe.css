@@ -31,3 +31,12 @@ section h1 {
     vertical-align: top;
     width: 50%;
 } */
+
+#delete-recipe .delete p {
+    color: red;
+}
+#delete-recipe button {
+    background-color: red;
+    color: #fff;
+    border: none;
+}
