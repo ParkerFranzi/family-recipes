@@ -118,8 +118,8 @@ class App extends Component {
     this.setState({ loading: true })
     console.log(this.state)
     Promise.all([
-      fetch(`${config.API_ENDPOINT_LOCAL}/users`),
-      fetch(`${config.API_ENDPOINT_LOCAL}/recipes`)
+      fetch(`${config.API_ENDPOINT}/users`),
+      fetch(`${config.API_ENDPOINT}/recipes`)
     ])
 
     .then(([usersRes, recipesRes]) => {
