@@ -31,6 +31,7 @@ export default {
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-steak-scaled.jpg",
             "prepTime":"5-15 min",
             "cookTime":"1-4 hrs",
+            "servings": "however many steaks you make",
         },
         {
             "recipeId":2,
@@ -55,6 +56,7 @@ export default {
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-ribs-scaled.jpg",
             "prepTime":"5-15 min",
             "cookTime":"1-4 hrs",
+            "servings":"half rack per person",
         },
         {
             "recipeId":3,
@@ -72,7 +74,7 @@ export default {
                 "8":"Peanuts *",
                 "9":"Green Onion as garnish",
                 "10":"2 tbsp Cooking oil",
-                "11":"ginger"
+                "11":"ginger",
             },
             "instructions":{
                 "1":"Cut up the chicken and brocolli into bite sized pieces, set brocolli aside",
@@ -81,11 +83,12 @@ export default {
                 "4":"Once chicken is cooked add in the brocolli and peanuts and stir fry for a few minutes, make sure not to drain any of the juices from the chicken",
                 "5":"Add the sauce on top over everything, mix everything then cover for about 5 minutes",
                 "6":"Garnish with green onion",
-                "7":"Serve over rice, cauliflower rice, noodles or just eat it straight"
+                "7":"Serve over rice, cauliflower rice, noodles or just eat it straight",
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/spicy-peanut-chicken-scaled.jpg",
             "prepTime":"5-15 min",
             "cookTime":"1-4 hrs",
+            "servings":"3-4",
         },
         {
             "recipeId":4,
@@ -97,7 +100,7 @@ export default {
                 "2":"Salt",
                 "3":"Pepper",
                 "4":"Garlic Powder *",
-                "5":"Or rub of your choice"
+                "5":"Or rub of your choice",
             },
             "instructions":{
                 "1":"Set water bath on your Sous Vide machine to more steak like - 140F, pulled pork- 160F",
@@ -106,11 +109,12 @@ export default {
                 "4":"Leave in bath for 18-36 hours lower temperatures you want to have in the bath towards the higher number, making sure it doesn't float",
                 "5":"If done at a low temperature sear the outside like a roast",
                 "6":"If done more like pulled pork shred some apart and fry some up in a pan for some crispness",
-                "7":"Enjoy however you would like to eat it"
+                "7":"Enjoy however you would like to eat it",
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-pulled-pork-scaled.jpg",
             "prepTime":"5-15 min",
             "cookTime":"1-4 hrs",
+            "servings":"Depends how you're using it",
         },
         {
             "recipeId":5,
@@ -122,7 +126,7 @@ export default {
                 "2":"Salt",
                 "3":"Pepper",
                 "4":"Garlic Powder *",
-                "5":"Or rub of your choice"
+                "5":"Or rub of your choice",
             },
             "instructions":{
                 "1":"Set water bath on your Sous Vide machine to more steak like - 140F, pulled pork- 160F",
@@ -131,11 +135,12 @@ export default {
                 "4":"Leave in bath for 18-36 hours lower temperatures you want to have in the bath towards the higher number, making sure it doesn't float",
                 "5":"If done at a low temperature sear the outside like a roast",
                 "6":"If done more like pulled pork shred some apart and fry some up in a pan for some crispness",
-                "7":"Enjoy however you would like to eat it"
+                "7":"Enjoy however you would like to eat it",
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-pulled-pork-scaled.jpg",
             "prepTime":"5-15 min",
             "cookTime":"1-4 hrs",
+            "servings":"Depends how you're using it",
         },
         {
             "recipeId":6,
@@ -161,6 +166,7 @@ export default {
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-pulled-pork-scaled.jpg",
             "prepTime":"5-15 min",
             "cookTime":"1-4 hrs",
+            "servings":"Depends how you're using it",
         },
         {
             "recipeId":7,
@@ -172,7 +178,7 @@ export default {
                 "2":"Salt",
                 "3":"Pepper",
                 "4":"Garlic Powder *",
-                "5":"Or rub of your choice"
+                "5":"Or rub of your choice",
             },
             "instructions":{
                 "1":"Set water bath on your Sous Vide machine to more steak like - 140F, pulled pork- 160F",
@@ -181,11 +187,12 @@ export default {
                 "4":"Leave in bath for 18-36 hours lower temperatures you want to have in the bath towards the higher number, making sure it doesn't float",
                 "5":"If done at a low temperature sear the outside like a roast",
                 "6":"If done more like pulled pork shred some apart and fry some up in a pan for some crispness",
-                "7":"Enjoy however you would like to eat it"
+                "7":"Enjoy however you would like to eat it",
             },
             "image":"https://www.parkerfranzi.com/wp-content/uploads/2020/01/sous-vide-pulled-pork-scaled.jpg",
             "prepTime":"5-15 min",
             "cookTime":"1-4 hrs",
+            "servings":"Depends how you're using it",
         },
     ]
 }

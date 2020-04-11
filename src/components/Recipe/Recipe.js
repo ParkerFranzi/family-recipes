@@ -37,7 +37,7 @@ export default class Recipe extends Component {
         console.log(this.state)
         const matchingRecipe = Number(this.props.match.params.recipeId)
         const recipeFilter = this.context.recipes.filter(recipe => recipe.id === matchingRecipe)
-        const {dishname, public_id, pic_type, description, preptime, cooktime, ingredients, instructions, userid} = recipeFilter[0]
+        const {dishname, public_id, pic_type, description, preptime, cooktime, ingredients, instructions, userid, servings} = recipeFilter[0]
         if (recipeFilter[0] === undefined) {
             return <div className="edit-recipe-form">
                 <p>Recipe not found</p>
@@ -59,6 +59,7 @@ export default class Recipe extends Component {
                 <p className="description-text">{description}</p>
                 <p className="prep-time"><b>Prep Time:</b> {preptime}</p>
                 <p className="cook-time"><b>Cook Time:</b> {cooktime}</p>
+                <p className="servings"><b>Servings:</b> {servings}</p>
                 <h3>Ingredients</h3>
                 <ul className="ingredients">
                     {ingredientArray.map((ingredient, index) =>

@@ -38,6 +38,10 @@ export default class AddRecipe extends Component {
                 value: '',
                 touched: false
             },
+            servings: {
+                value: '',
+                touched: false
+            },
             cookTime: {
                 value: '',
                 touched: false
@@ -62,6 +66,9 @@ export default class AddRecipe extends Component {
     }
     updatePrepTime(prepTime) {
         this.setState({prepTime: {value: prepTime, touched: true }})
+    }
+    updateServings(servings) {
+        this.setState({servings: {value: servings, touched: true }})
     }
     updateCookTime(cookTime) {
         this.setState({cookTime: {value: cookTime, touched: true }})
@@ -121,7 +128,7 @@ export default class AddRecipe extends Component {
     handleSubmit = e => {
         e.preventDefault()
         this.setState({loading: true})
-        const { dishName, description, ingredients, instructions, dishPic, prepTime, cookTime, recipeCreator } = this.state
+        const { dishName, description, ingredients, instructions, dishPic, prepTime, cookTime, servings, recipeCreator } = this.state
 
         const ingredientList = this.formIngredientList(ingredients)
         const instructionList = this.formInstructionList(instructions)
@@ -133,6 +140,7 @@ export default class AddRecipe extends Component {
         formData.append('description', description.value)
         formData.append('preptime', prepTime.value)
         formData.append('cooktime', cookTime.value)
+        formData.append('servings', servings.value)
         formData.append('image', dishPic.file)
         formData.append('ingredients', JSON.stringify(ingredientList))
         formData.append('instructions', JSON.stringify(instructionList))
@@ -150,6 +158,7 @@ export default class AddRecipe extends Component {
             dishPic.value = ''
             prepTime.value = ''
             cookTime.value = ''
+            servings.value = ''
             recipeCreator.value = ''
             recipe.ingredients = ingredientList
             recipe.instructions = instructionList
@@ -262,6 +271,18 @@ export default class AddRecipe extends Component {
                             aria-required="true"
                             aria-label="Cook Time"
                             onChange={e => this.updateCookTime(e.target.value)}
+                        />
+                    </div>
+                    <div id="servings" className="form-row">
+                        <label htmlFor="servings">Servings <span className="require-input">*</span></label>
+                        <input
+                            type="text"
+                            name="servings"
+                            id="serving-amount"
+                            required
+                            aria-required="true"
+                            aria-label="Servings"
+                            onChange={e => this.updateServings(e.target.value)}
                         />
                     </div>
                     <div id="ingredients-list" className="form-row">

@@ -35,6 +35,9 @@ export default class EditRecipe extends Component {
             prepTime: {
                 value: ''
             },
+            servings: {
+                value: ''
+            },
             cookTime: {
                 value: ''
             },
@@ -92,6 +95,10 @@ export default class EditRecipe extends Component {
     updatePrepTime(prepTime) {
         this.setState({prepTime: {value: prepTime }})
     }
+    updateServings(servings) {
+        this.setState({servings: {value: servings }})
+
+    }
     updateCookTime(cookTime) {
         this.setState({cookTime: {value: cookTime }})
     }
@@ -114,7 +121,7 @@ export default class EditRecipe extends Component {
     handleSubmit = event => {
         event.preventDefault()
         this.setState({ loading: true })
-        const { dishName, description, ingredients, instructions, dishPic, prepTime, cookTime, public_id, recipeCreator } = this.state
+        const { dishName, description, ingredients, instructions, dishPic, prepTime, cookTime, servings, public_id, recipeCreator } = this.state
         const ingredientList = this.formIngredientList(ingredients)
         const instructionList = this.formInstructionList(instructions)
         const recipeId = this.props.match.params.recipeId
@@ -125,6 +132,7 @@ export default class EditRecipe extends Component {
         formData.append('description', description.value)
         formData.append('preptime', prepTime.value)
         formData.append('cooktime', cookTime.value)
+        formData.append('servings', servings.value)
         formData.append('image', dishPic.file)
         formData.append('public_id', public_id.value)
         formData.append('ingredients', JSON.stringify(ingredientList))
@@ -140,6 +148,7 @@ export default class EditRecipe extends Component {
             dishPic.value = ''
             prepTime.value = ''
             cookTime.value = ''
+            servings.value = ''
             recipeCreator.value = ''
             public_id.value = ''
             recipe.ingredients = ingredientList
@@ -232,6 +241,7 @@ export default class EditRecipe extends Component {
             this.updateDescription(recipe[0].description)
             this.updateCookTime(recipe[0].cooktime)
             this.updatePrepTime(recipe[0].preptime)
+            this.updateServings(recipe[0].servings)
             this.setIngredients(recipe[0].ingredients)
             this.setInstructions(recipe[0].instructions)
             this.updateRecipeCreator(recipe[0].userid)
@@ -250,7 +260,7 @@ export default class EditRecipe extends Component {
             return <p>{this.state.error}</p>
         }
         const currentUser = this.context.users.filter(user => user.id === this.state.id)
-
+        console.log(this.state.servings)
         return (
             <div id="edit-recipe">
                 <h2 className="page-header">Edit Recipe</h2>
@@ -327,6 +337,16 @@ export default class EditRecipe extends Component {
                                 required
                                 arai-label="Cook Time"
                                 onChange={e => this.updateCookTime(e.target.value)}
+                            />
+                        </div>
+                        <div id="servings" className="form-row">
+                            <label htmlFor="servings">Servings</label>
+                            <input
+                                type="text"
+                                value={this.state.servings.value}
+                                required
+                                aria-label="Servings"
+                                onChange={e => this.updateServings(e.target.value)}
                             />
                         </div>
                         <div id="ingredients-list" className="form-row">
