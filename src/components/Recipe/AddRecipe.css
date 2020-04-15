@@ -1,9 +1,10 @@
 input, textarea, select {
     width: 100%;
     padding: 5px;
-    font-family: 'Karla'
+    font-family: 'Karla';
+    font-size: 1rem;
 }
-textarea {
+#recipe-description textarea {
     height: 200px;
 }
 .form-row {

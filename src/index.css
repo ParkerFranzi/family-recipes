@@ -21,8 +21,8 @@ button {
 button:hover {
   cursor: pointer;
 }
-button[type="submit"] {
-  float: right;
+#submit-button, #delete-recipe {
+  text-align: right;
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

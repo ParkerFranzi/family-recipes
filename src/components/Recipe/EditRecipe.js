@@ -207,7 +207,7 @@ export default class EditRecipe extends Component {
         event.preventDefault()
         AuthApiService.deleteRecipe(this.props.match.params.recipeId)
         .then(() => {
-            this.context.deleteRecipe(this.props.match.params.recipeId)
+            this.context.deleteRecipe(Number(this.props.match.params.recipeId))
             this.props.history.push(`/`)
         })
         .catch(res => {
@@ -321,7 +321,7 @@ export default class EditRecipe extends Component {
                                 onChange={e => this.updateDescription(e.target.value)}
                             />
                         </div>
-                        <div id="recipie-time" className="form-row">
+                        <div id="prep-time" className="form-row">
                             <label htmlFor="prep-time">Prep Time</label>
                             <input
                                 type="text"
@@ -330,6 +330,8 @@ export default class EditRecipe extends Component {
                                 arai-label="Prep Time"
                                 onChange={e => this.updatePrepTime(e.target.value)}
                             />
+                        </div>
+                        <div id="cook-time" className="form-row">
                             <label htmlFor="cook-time">Cook Time</label>
                             <input
                                 type="text"
@@ -383,7 +385,7 @@ export default class EditRecipe extends Component {
                             <label htmlFor="instructions">Directions</label>
                             {this.state.instructions.map((instruction, index) => (
                                 <div className="instructions" key={instruction + index}>
-                                    <input
+                                    <textarea
                                         type="text"
                                         placeholder={`instruction #${index + 1} name`}
                                         value={instruction.instruction}
@@ -417,17 +419,21 @@ export default class EditRecipe extends Component {
                                 accept=".jpg, .jpeg, .png"
                                 onChange={e => this.updateDishPic(e.target.value, e.target.files)}
                             />
-                            {this.state.currentPic &&
-                                <div className="current-picture">
-                                    Current Picture: <img alt={this.state.dishName.value + "-current-pic"} src={`${config.CLOUDINARY_URL}/w_500,q_auto/${this.state.currentPic.value}`} />
-                                </div>
-                            }
                         </div>
-                        <button
-                            type="submit"
-                        >
-                            Edit Recipe
-                        </button>
+                        {this.state.currentPic &&
+                            <div id="current-picture" className="form-row">
+                                <label htmlFor="current-picture">Current Picture: </label>
+                                <img alt={this.state.dishName.value + "-current-pic"} src={`${config.CLOUDINARY_URL}/w_500,q_auto/${this.state.currentPic.value}`} />
+                            </div>
+                        }
+                        <div id="submit-button" className="form-row">
+                            <button
+                                type="submit"
+                            >
+                                Update Recipe
+                            </button>
+                        </div>
+
                         {this.state.loading && <Roller />}
                         {this.state.error && <ValidationError message={this.state.error} />}
                     </form>

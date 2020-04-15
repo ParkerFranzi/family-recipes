@@ -273,7 +273,7 @@ export default class AddUser extends Component {
                             onChange={e => this.updatePicture(e.target.value, e.target.files)}
                         />
                     </div>
-                    <div className="form-row">
+                    <div id="submit-button" className="form-row">
                         <button 
                             type="submit"
                             className="noteName_registration_button"

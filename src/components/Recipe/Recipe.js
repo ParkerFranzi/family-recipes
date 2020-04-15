@@ -72,7 +72,7 @@ export default class Recipe extends Component {
                 <ul className="instructions">
                     {instructionArray.map((instruction, index) =>
                         <li key={index + instruction}>
-                            <p>{(index + 1) + ". " + instruction}</p> 
+                            <p><span>{(index + 1) + ".  "}</span> {instruction}</p> 
                         </li>   
                     )}
                 </ul>

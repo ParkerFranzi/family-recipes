@@ -320,7 +320,7 @@ export default class AddRecipe extends Component {
                         {this.state.instructions.map((instruction, index) => (
                             
                             <div className="instructions" key={index}>
-                                <input
+                                <textarea
                                     type="text"
                                     placeholder={`instruction #${index + 1}`}
                                     value={instruction.name}
@@ -356,11 +356,13 @@ export default class AddRecipe extends Component {
                             onChange={e => this.updateDishPic(e.target.value, e.target.files)}
                         />
                     </div>
-                    <button
-                        type="submit"
-                    >
-                        Submit Recipe
-                    </button>
+                    <div id="submit-button" className="form-row">
+                        <button
+                            type="submit"
+                        >
+                            Submit Recipe
+                        </button>
+                    </div>
                     {this.state.loading && <Roller />}
                     {this.state.error && <ValidationError message={this.state.error} />}
                 </form>

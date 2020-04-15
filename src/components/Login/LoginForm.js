@@ -60,7 +60,7 @@ export default class UserLogin extends Component {
                             aria-label="Password"
                         />
                     </div>
-                    <div className="form-row">
+                    <div id="submit-button" className="form-row">
                         <button
                             type="submit"
                             className="user-login-button"

@@ -16,6 +16,9 @@ section h1 {
 .edit-recipe {
     float: right;
 }
+.instructions span {
+    font-weight: bold;
+}
 /* .picture-and-description img {
     display: inline-block;
     width: 50%;
