@@ -40,7 +40,7 @@ class UserLanding extends Component {
             <section className="user-landing">
                 <h2 className="user-landing-heading">{fname + " " + lname + "'s"} Recipes</h2>
                 <div className="user-img">
-                    <img alt={fname + "-pic"} src={`${config.CLOUDINARY_URL}/w_250,h_250,q_auto/${public_id}.${pic_type}`} />
+                    <img alt={fname + "-pic"} src={`${config.CLOUDINARY_URL}/w_250,h_250,q_auto,c_thumb/${public_id}.${pic_type}`} />
                 </div>
                 <ul className="recipe-list">
                     {recipeFilter.map(recipe => 
